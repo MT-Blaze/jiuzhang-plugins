@@ -11,6 +11,7 @@ plugins/org.jiuzhang.placeholder.zip 占位演示插件（在线安装闭环演�
 plugins/org.jiuzhang.core-bank.zip   真题题库（456 道真题，本地 SQLite）
 plugins/org.jiuzhang.paper-gen.zip   组卷排版（题篮 → A4 练习卷）
 plugins/org.jiuzhang.handout.zip     讲义排版（Markdown → A4 讲义）
+plugins/org.jiuzhang.editor.zip      录题工作台（表单 + A4 预览 → 入库，需底座 v0.6.2+）
 ```
 
 ## 底座如何读取
