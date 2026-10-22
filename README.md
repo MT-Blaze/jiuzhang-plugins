@@ -8,6 +8,9 @@
 plugins.json                      官方索引（底座默认预填它的 gh-proxy 加速地址）
 plugins/org.jiuzhang.demo-bank.zip   示例题库（5 道高中数学示例题）
 plugins/org.jiuzhang.placeholder.zip 占位演示插件（在线安装闭环演示）
+plugins/org.jiuzhang.core-bank.zip   真题题库（456 道真题，本地 SQLite）
+plugins/org.jiuzhang.paper-gen.zip   组卷排版（题篮 → A4 练习卷）
+plugins/org.jiuzhang.handout.zip     讲义排版（Markdown → A4 讲义）
 ```
 
 ## 底座如何读取
