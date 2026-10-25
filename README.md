@@ -5,14 +5,16 @@
 ## 目录
 
 ```
-plugins.json                      官方索引（底座默认预填它的 gh-proxy 加速地址）
-plugins/org.jiuzhang.core-bank.zip   真题题库引擎（声明 bank.provider；发行版为空壳，首启建空库）
-plugins/org.jiuzhang.editor.zip      录题工作台（表单 + A4 预览 → 入库，需底座 v0.7.1+）
+plugins.json                         官方索引（底座默认预填它的 gh-proxy 加速地址）
+plugins/org.jiuzhang.bank-engine.zip 无界面题库引擎（七表结构与读写，声明 bank.provider）
+plugins/org.jiuzhang.bank-ui.zip     真题题库界面（大纲、搜索、题篮，需引擎）
+plugins/org.jiuzhang.chat.zip        AI 助手（右栏对话，需宿主命令面）
+plugins/org.jiuzhang.editor.zip      录题工作台（表单 + A4 预览 → 入库）
 plugins/org.jiuzhang.paper-gen.zip   组卷排版（题篮 → A4 练习卷）
 plugins/org.jiuzhang.handout.zip     讲义排版（Markdown → A4 讲义）
 ```
 
-四个包就是索引里的全部条目；`plugins.json` 的 `entries` 与本目录逐条对应，
+六个包就是索引里的全部条目；`plugins.json` 的 `entries` 与本目录逐条对应，
 版本号以各包 `plugin.json` 的 `version` 为准（索引由底座仓库 `tools/sync_plugin_index.py` 同步，不手改）。
 历史上的 `demo-bank` / `placeholder` 两个演示包已退役，索引与本目录都不再收录。
 
