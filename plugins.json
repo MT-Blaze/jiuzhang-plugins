@@ -4,24 +4,41 @@
   "updated_at": "2026-10-25",
   "entries": [
     {
-      "id": "org.jiuzhang.core-bank",
-      "name": "真题题库",
-      "version": "0.7.2",
+      "id": "org.jiuzhang.bank-engine",
+      "name": "题库引擎",
+      "version": "0.2.0",
       "kind": "tool",
       "api_version": "1.0",
-      "description": "底座公共真题库（本地 SQLite·工作区隔离）：按年级、难度、题型与关键词筛选，支持预览与加入题篮。发行版为空壳，首启自动建空库，由老师在工作区里录题自建；本机开发可挂含真题的种子库。",
-      "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.core-bank.zip",
+      "description": "无界面的题库数据引擎（军令 #20 从 core-bank 拆出）：负责七表结构、题目读写、大纲与考向、查重扫描与收敛合并事务。只经 Host API 调用，数据落在当前工作区；引擎受保护，控制台不可卸载。",
+      "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-engine.zip",
       "mirrors": [
-        "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.core-bank.zip",
-        "https://cdn.jsdelivr.net/gh/MT-Blaze/jiuzhang-plugins@main/plugins/org.jiuzhang.core-bank.zip",
-        "https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.core-bank.zip"
+        "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-engine.zip",
+        "https://cdn.jsdelivr.net/gh/MT-Blaze/jiuzhang-plugins@main/plugins/org.jiuzhang.bank-engine.zip",
+        "https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-engine.zip"
       ],
-      "homepage": "https://github.com/MT-Blaze/jiuzhang-operator/tree/main/plugins/org.jiuzhang.core-bank"
+      "homepage": "https://github.com/MT-Blaze/jiuzhang-operator/tree/main/plugins/org.jiuzhang.bank-engine",
+      "min_host_version": "0.11.2"
+    },
+    {
+      "id": "org.jiuzhang.bank-ui",
+      "name": "真题题库",
+      "version": "0.2.0",
+      "kind": "tool",
+      "api_version": "1.0",
+      "description": "题库视图插件（纯前端）：左侧大纲树、题目列表与详情、待审队列与查重双栏审查；数据一律向当前活跃题库引擎申请，自己不碰数据库。",
+      "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-ui.zip",
+      "mirrors": [
+        "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-ui.zip",
+        "https://cdn.jsdelivr.net/gh/MT-Blaze/jiuzhang-plugins@main/plugins/org.jiuzhang.bank-ui.zip",
+        "https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-ui.zip"
+      ],
+      "homepage": "https://github.com/MT-Blaze/jiuzhang-operator/tree/main/plugins/org.jiuzhang.bank-ui",
+      "min_host_version": "0.11.2"
     },
     {
       "id": "org.jiuzhang.paper-gen",
       "name": "组卷排版",
-      "version": "0.3.2",
+      "version": "0.4.0",
       "kind": "tool",
       "api_version": "1.0",
       "description": "把题篮里的真题排成 A4 练习卷：自动分页、公式渲染、答案可选、可直接打印为 PDF。",
@@ -36,7 +53,7 @@
     {
       "id": "org.jiuzhang.handout",
       "name": "讲义排版",
-      "version": "0.1.3",
+      "version": "0.2.0",
       "kind": "tool",
       "api_version": "1.0",
       "description": "把 Markdown 讲义原稿实时排成 A4：标题分级、公式渲染、列表与表格自动分页，可直接打印为 PDF。",
@@ -51,7 +68,7 @@
     {
       "id": "org.jiuzhang.editor",
       "name": "录题工作台",
-      "version": "0.4.1",
+      "version": "0.5.0",
       "kind": "tool",
       "api_version": "1.0",
       "description": "中间表单、右侧 A4 实时预览：录题干与公式、动态增删选项（含选项配图回填）、填答案与解析；边写边存草稿不丢、一键派生变式、删题二次确认、保存后自动回流刷新；右侧 AI 副驾可改写题干并回填。一键清洗 LaTeX 后经宿主写入本地真题题库。需底座 v0.7.1 及以上。",
