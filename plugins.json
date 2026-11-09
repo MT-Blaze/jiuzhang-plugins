@@ -1,15 +1,16 @@
 {
   "index_version": "1.0",
   "name": "九章算子官方插件索引",
-  "updated_at": "2026-11-07",
+  "updated_at": "2026-11-09",
   "entries": [
     {
       "id": "org.jiuzhang.bank-engine",
-      "name": "题库引擎",
-      "version": "1.0.1",
+      "name": "九章题库",
+      "version": "3.0.0",
       "kind": "tool",
       "api_version": "1.0",
-      "description": "无界面的题库数据引擎（军令 #20 从 core-bank 拆出）：负责七表结构、题目读写、大纲与考向、查重扫描与收敛合并事务。只经 Host API 调用，数据落在当前工作区；引擎受保护，控制台不可卸载。",
+      "description": "九章题库：31 张纯关系表的纯后台数据引擎，注册默认 bank.provider 与三条只读数据命令，供录题、组卷、讲义等业务插件经 Host API 调用；自身不带任何界面。",
+      "changelog": "1. 界面彻底退役：删除 webui 全部前端资产，引擎退居纯后台\n2. 不再向微内核注册工作区 Tab / 画布视图，左栏不再出现「九章题库」入口\n3. 保留默认 bank.provider、三条只读数据命令与 31 张关系表，业务插件继续经 Host API 调用",
       "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-engine.zip",
       "mirrors": [
         "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-engine.zip",
@@ -17,22 +18,6 @@
         "https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-engine.zip"
       ],
       "homepage": "https://github.com/MT-Blaze/jiuzhang-operator/tree/main/plugins/org.jiuzhang.bank-engine",
-      "min_host_version": "1.0.0"
-    },
-    {
-      "id": "org.jiuzhang.bank-ui",
-      "name": "真题题库",
-      "version": "1.0.3",
-      "kind": "tool",
-      "api_version": "1.0",
-      "description": "题库视图插件（纯前端）：左侧大纲树、题目列表与详情、待审队列；数据一律向当前活跃题库引擎申请，自己不碰数据库。",
-      "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-ui.zip",
-      "mirrors": [
-        "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-ui.zip",
-        "https://cdn.jsdelivr.net/gh/MT-Blaze/jiuzhang-plugins@main/plugins/org.jiuzhang.bank-ui.zip",
-        "https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-ui.zip"
-      ],
-      "homepage": "https://github.com/MT-Blaze/jiuzhang-operator/tree/main/plugins/org.jiuzhang.bank-ui",
       "min_host_version": "1.0.0"
     },
     {
@@ -89,7 +74,7 @@
       "version": "1.0.1",
       "kind": "renderer",
       "api_version": "1.0",
-      "description": "录题战绩一览：总题数、今日入库、待审核、已落库四张数据卡片，过去 365 天的绿格子入库热力图，以及最近录入的 5 道题（点击直达题库）。全部数据来自活跃题库的只读看板通道。需底座 v1.0.0 及以上。",
+      "description": "录题战绩一览：总题数、今日入库、待审核、已落库四张数据卡片，过去 365 天的绿格子入库热力图，以及最近录入的 5 道题（点击直达录题工作台）。全部数据来自活跃题库的只读看板通道。需底座 v1.0.0 及以上。",
       "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.dashboard.zip",
       "mirrors": [
         "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.dashboard.zip",
