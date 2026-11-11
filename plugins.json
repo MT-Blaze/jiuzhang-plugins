@@ -71,11 +71,11 @@
     {
       "id": "org.jiuzhang.dashboard",
       "name": "数据看板",
-      "version": "1.0.5",
+      "version": "1.0.6",
       "kind": "renderer",
       "api_version": "1.0",
       "description": "录题战绩一览：总题数、今日入库、待审核、已落库四张数据卡片，可切换近一周/近一月/近一年的绿格子入库热力图，以及最近录入的 5 道题（点击直达录题工作台）。全部数据来自活跃题库的只读看板通道。需底座 v1.0.0 及以上。",
-      "changelog": "1. 热力图新增【近一周】【近一月】【近一年】三档时间切换，标题旁一键切换，默认近一年\n2. 近一月渲染 30 天宽格子排 5 行；近一周 7 格单行放大，格内直显周几与当日题数\n3. 切档在缓存数据上按日期切片，秒切不重复请求后端；悬停仍显示日期与当日题数\n4. index.html 引用全部带 ?v=1.0.5",
+      "changelog": "1. 热力图新增【近一周】【近一月】【近一年】三档时间切换，标题旁一键切换，默认近一年\n2. 近一月渲染 30 天宽格子排 5 行；近一周 7 格单行放大，格内直显周几与当日题数\n3. 切档在缓存数据上按日期切片，秒切不重复请求后端；悬停仍显示日期与当日题数\n4. 右栏全局设置随学段 / 学科级联刷新教材版本清单，跨学段版本不再串入\n5. index.html 引用全部带 ?v=1.0.6",
       "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.dashboard.zip",
       "mirrors": [
         "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.dashboard.zip",
