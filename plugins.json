@@ -1,7 +1,7 @@
 {
   "index_version": "1.0",
   "name": "九章算子官方插件索引",
-  "updated_at": "2026-11-11",
+  "updated_at": "2026-11-12",
   "entries": [
     {
       "id": "org.jiuzhang.bank-engine",
@@ -17,7 +17,7 @@
         "https://cdn.jsdelivr.net/gh/MT-Blaze/jiuzhang-plugins@main/plugins/org.jiuzhang.bank-engine.zip",
         "https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.bank-engine.zip"
       ],
-      "homepage": "https://github.com/MT-Blaze/jiuzhang-operator/tree/main/plugins/org.jiuzhang.bank-engine",
+      "homepage": "https://github.com/MT-Blaze/jiuzhang-plugins/tree/main/src/org.jiuzhang.bank-engine",
       "min_host_version": "1.0.0"
     },
     {
@@ -33,7 +33,7 @@
         "https://cdn.jsdelivr.net/gh/MT-Blaze/jiuzhang-plugins@main/plugins/org.jiuzhang.paper-gen.zip",
         "https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.paper-gen.zip"
       ],
-      "homepage": "https://github.com/MT-Blaze/jiuzhang-operator/tree/main/plugins/org.jiuzhang.paper-gen",
+      "homepage": "https://github.com/MT-Blaze/jiuzhang-plugins/tree/main/src/org.jiuzhang.paper-gen",
       "min_host_version": "1.0.0"
     },
     {
@@ -49,7 +49,7 @@
         "https://cdn.jsdelivr.net/gh/MT-Blaze/jiuzhang-plugins@main/plugins/org.jiuzhang.handout.zip",
         "https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.handout.zip"
       ],
-      "homepage": "https://github.com/MT-Blaze/jiuzhang-operator/tree/main/plugins/org.jiuzhang.handout",
+      "homepage": "https://github.com/MT-Blaze/jiuzhang-plugins/tree/main/src/org.jiuzhang.handout",
       "min_host_version": "1.0.0"
     },
     {
@@ -65,7 +65,7 @@
         "https://cdn.jsdelivr.net/gh/MT-Blaze/jiuzhang-plugins@main/plugins/org.jiuzhang.editor.zip",
         "https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip"
       ],
-      "homepage": "https://github.com/MT-Blaze/jiuzhang-operator/tree/main/plugins/org.jiuzhang.editor",
+      "homepage": "https://github.com/MT-Blaze/jiuzhang-plugins/tree/main/src/org.jiuzhang.editor",
       "min_host_version": "1.0.0"
     },
     {
@@ -82,7 +82,7 @@
         "https://cdn.jsdelivr.net/gh/MT-Blaze/jiuzhang-plugins@main/plugins/org.jiuzhang.dashboard.zip",
         "https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.dashboard.zip"
       ],
-      "homepage": "https://github.com/MT-Blaze/jiuzhang-operator/tree/main/plugins/org.jiuzhang.dashboard",
+      "homepage": "https://github.com/MT-Blaze/jiuzhang-plugins/tree/main/src/org.jiuzhang.dashboard",
       "min_host_version": "1.0.0"
     }
   ]
