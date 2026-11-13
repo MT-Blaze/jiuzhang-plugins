@@ -57,7 +57,6 @@
     var respond = deps.respond;
     var restoreWorklist = deps.restoreWorklist;
     var saveWorklist = deps.saveWorklist;
-    var seedBatch = deps.seedBatch;
     var setMode = deps.setMode;
     var startIdleWatch = deps.startIdleWatch;
     var state = coreState.state;
@@ -239,11 +238,8 @@
       if (sourceHintEl) sourceHintEl.textContent = "源码 · 整段源码直接编辑";
       startIdleWatch();
       if (typeof wireAiCopilot === "function") wireAiCopilot();
-      // 首屏就是批次列表：中转站还空着就先把这批识别结果入池，好让老师有东西可点。
-      refreshBatches().then(function (cards) {
-        if (cards.length) return null;
-        return seedBatch().then(function () { return refreshBatches(); });
-      });
+      // 首屏就是批次列表：中转站里有几批就画几批，空着就空着，不造假题。
+      refreshBatches();
       restoreWorklist().then(function () {
         renderAll();
         saveWorklist();

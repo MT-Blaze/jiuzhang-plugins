@@ -44,8 +44,6 @@
     publish: publish,
   });
 
-  var DEV_FIXTURES = devFixtures.DEV_FIXTURES;
-
   var coreRich = window.JzoEditorRich.create({});
   var appendBody = coreRich.appendBody, appendRich = coreRich.appendRich;
   var clampValue = coreRich.clampValue, el = coreRich.el, safeAssetUri = coreRich.safeAssetUri, imageUri = coreRich.imageUri;
@@ -261,7 +259,6 @@
 
   var uiBatches = window.JzoEditorBatches.create({
     dom: dom,
-    DEV_FIXTURES: DEV_FIXTURES,
     buildExamSource: buildExamSource,
     closeModal: closeModal,
     dock: dock,
@@ -291,7 +288,6 @@
   });
   var loadForEdit = uiBatches.loadForEdit;
   var refreshBatches = uiBatches.refreshBatches;
-  var seedBatch = uiBatches.seedBatch;
   var setMode = uiBatches.setMode;
   var stashOne = uiBatches.stashOne;
   var noteActivity = uiBatches.noteActivity;
@@ -760,7 +756,6 @@
     respond: respond,
     restoreWorklist: restoreWorklist,
     saveWorklist: saveWorklist,
-    seedBatch: seedBatch,
     setMode: setMode,
     startIdleWatch: startIdleWatch,
     wireIntake: wireIntake,

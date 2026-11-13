@@ -10,7 +10,6 @@
   function create(deps) {
     var coreState = deps.coreState;
     var COMMAND_QUESTION_ID_RE = coreState.COMMAND_QUESTION_ID_RE;
-    var DEV_FIXTURES = deps.DEV_FIXTURES;
     var PLUGIN_ID = coreState.PLUGIN_ID;
     var batchListEl = deps.dom.batchListEl;
     var batchNoEl = deps.dom.batchNoEl;
@@ -521,23 +520,6 @@
     });
   }
 
-  /** 头一次开审核台：中转站是空的，就把识别结果整批入池，批次列表才有东西可点。 */
-  function seedBatch() {
-    var questions = DEV_FIXTURES.map(function (doc) {
-      return { question: doc };
-    });
-    return hostCall("pending.save_draft", {
-      questions: questions,
-      origin: "editor.recognize"
-    }).then(function (result) {
-      dock("识别结果已入池：" + (result.batch_id || "") + "（" + questions.length + " 题）。");
-      return result;
-    }, function (error) {
-      dockWarn("识别结果入池失败：" + ((error && error.message) || "未知原因"), errorDetail(error));
-      return null;
-    });
-  }
-
   /** 画布视图（review / list）也走宿主参数通道：辅助栏那颗【返回列表】才有路。 */
   function publishView(view) {
     hostCall("ui.params.set", {
@@ -784,7 +766,6 @@
       refreshBatches: refreshBatches,
       renderBatchBar: renderBatchBar,
       renderBatchList: renderBatchList,
-      seedBatch: seedBatch,
       setMode: setMode,
       stashBeforeLeave: stashBeforeLeave,
       stashOne: stashOne,
