@@ -172,7 +172,7 @@
         paint();
         dock((kind === "layout" ? "版面引擎：" : "识别引擎：")
           + engineLabel(kind, current()) + "（只对下一次【开始解析】生效）");
-        // 切到 YOLO 且本机没模型：当场弹窗选满血版/量化版，不让老师带着空库去解析。
+        // 切到 YOLO 且本机没模型：当场弹窗，可下载满血版或交云端，不让老师带着空库去解析。
         if (kind === "layout" && key === "yolo" && typeof modelGate === "function") {
           modelGate("yolo");
         }

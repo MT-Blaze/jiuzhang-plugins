@@ -4,12 +4,6 @@
   width: min(460px, 100%);
 }
 
-.ep-modal-hint {
-  margin: -8px 0 12px;
-  font-size: 12px;
-  color: var(--ink-soft);
-}
-
 .ep-model-actions {
   flex-wrap: wrap;
 }

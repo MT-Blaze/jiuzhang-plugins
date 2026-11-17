@@ -31,12 +31,10 @@
       // 本地 YOLO 模型选择（按需下载）：整块独立，删掉 ui_model.js 与这段即可下架。
       var modelModalEl = document.getElementById("edModelModal");
       var modelNoteEl = document.getElementById("edModelNote");
-      var modelHintEl = document.getElementById("edModelHint");
       var modelProgressEl = document.getElementById("edModelProgress");
       var modelProgressTextEl = document.getElementById("edModelProgressText");
       var modelBarEl = document.getElementById("edModelBar");
       var modelFullEl = document.getElementById("edModelFull");
-      var modelQuantizedEl = document.getElementById("edModelQuantized");
       var modelCancelEl = document.getElementById("edModelCancel");
       var poolEl = document.getElementById("edPool");
       var batchNoteEl = document.getElementById("edBatchNote");
@@ -243,12 +241,10 @@
       aiOverwriteModalEl: aiOverwriteModalEl,
       modelModalEl: modelModalEl,
       modelNoteEl: modelNoteEl,
-      modelHintEl: modelHintEl,
       modelProgressEl: modelProgressEl,
       modelProgressTextEl: modelProgressTextEl,
       modelBarEl: modelBarEl,
       modelFullEl: modelFullEl,
-      modelQuantizedEl: modelQuantizedEl,
       modelCancelEl: modelCancelEl,
       poolEl: poolEl,
       batchNoteEl: batchNoteEl,
