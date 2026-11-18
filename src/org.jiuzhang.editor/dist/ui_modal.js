@@ -3,6 +3,8 @@
  * （PLUGIN_SPEC §2.8.1：任何插件 JS 单文件不超过 800 行）。
  *
  * 依赖一律由 create(deps) 交进来，模块不认全局、也不碰宿主 DOM。
+ * 2026-11-19 起兼管两只配置内联视图的开合（openView/closeView）：
+ * 它们不再是模态——不进焦点圈、不吃 Esc，画布主区域整屏切换、返回还原状态。
  */
 (function (global) {
   "use strict";
@@ -10,17 +12,20 @@
   function create(deps) {
     var coreState = deps.coreState;
     var panel = coreState.panel;
-    var delModalEl = deps.dom.delModalEl;
-    var batchPurgeModalEl = deps.dom.batchPurgeModalEl;
-    var poolDelModalEl = deps.dom.poolDelModalEl;
-    var aiConfigModalEl = deps.dom.aiConfigModalEl;
-    var aiOverwriteModalEl = deps.dom.aiOverwriteModalEl;
-    var modelModalEl = deps.dom.modelModalEl;
-    var modelConfigModalEl = deps.dom.modelConfigModalEl;
+    var state = coreState.state;
+    var setMode = deps.setMode;
+    var dom = deps.dom;
+    var delModalEl = dom.delModalEl;
+    var batchPurgeModalEl = dom.batchPurgeModalEl;
+    var poolDelModalEl = dom.poolDelModalEl;
+    var aiOverwriteModalEl = dom.aiOverwriteModalEl;
+    var modelModalEl = dom.modelModalEl;
 
   // ---------- 弹窗：彻底删除（焦点圈住、Esc 可关、关掉还焦） ----------
   // 查重对比浮层不在这套里：它按军令 #23 一颗按钮都不放（画布里只许有题目内容），
   // 没有可圈住的焦点，开合由 ui_dup.js 自己管。
+  // aiConfigModalEl 与 modelConfigModalEl 已改画布内联视图：不再进这份名单，
+  // 焦点不圈、Esc 不关，开合走下面的 openView/closeView。
   var modalRestoreFocus = null;
 
   function openModalNode() {
@@ -29,13 +34,10 @@
     // 重题池的【删除】同样走二次确认（军令 #32 · 判据 5.4）：不加进这一串，
     // 焦点圈不住、Esc 也关不掉，等于把红按钮的确认样式做成两套。
     if (poolDelModalEl && !poolDelModalEl.hidden) return poolDelModalEl;
-    // AI 配置中心与覆盖确认（终极军令 任务一/三）：同样要圈得住焦点、Esc 能关。
-    if (aiConfigModalEl && !aiConfigModalEl.hidden) return aiConfigModalEl;
+    // 覆盖确认（终极军令 任务三）仍是真模态：要圈得住焦点、Esc 能关。
     if (aiOverwriteModalEl && !aiOverwriteModalEl.hidden) return aiOverwriteModalEl;
     // 本地模型下载选择（按需下载）：Esc 能关、焦点圈得住。
     if (modelModalEl && !modelModalEl.hidden) return modelModalEl;
-    // 模型配置页（可整块下架）：节点不在就跳过，焦点陷阱照旧。
-    if (modelConfigModalEl && !modelConfigModalEl.hidden) return modelConfigModalEl;
     return null;
   }
 
@@ -54,6 +56,57 @@
       modalRestoreFocus.focus();
     }
     modalRestoreFocus = null;
+  }
+
+  // ---------- 配置内联视图：画布主区域整屏切换（2026-11-19，不再做弹窗） ----------
+  // 打开＝setMode 进配置屏（批次/三栏/池屏全隐，状态原封不动）；返回＝还原先前屏、
+  // 滚动位置与触发按钮焦点。两视图互斥由 setMode 保证；从一视图跳另一视图时
+  // 不重新记账，返回仍落回最初的批次屏。
+  var viewReturn = null;
+
+  function configViewNode(mode) {
+    if (mode === "ai_config") return dom.aiConfigModalEl;
+    if (mode === "model_config") return dom.modelConfigModalEl;
+    return null;
+  }
+
+  function scrollableNodes() {
+    return [dom.batchesEl, dom.batchListEl && dom.batchListEl.parentNode,
+      dom.imageBodyEl, dom.sourceBodyEl, dom.renderBodyEl,
+      dom.originalBodyEl, dom.poolCanvasEl];
+  }
+
+  function openView(mode) {
+    var node = configViewNode(mode);
+    if (!node || !setMode) return;
+    if (!viewReturn) {
+      var scrolls = [];
+      scrollableNodes().forEach(function (item) {
+        if (item) scrolls.push([item, item.scrollTop]);
+      });
+      var trigger = document.activeElement;
+      if (!trigger || trigger === document.body) {
+        trigger = mode === "ai_config" ? dom.aiConfigListEl : dom.modelConfigBtnEl;
+      }
+      viewReturn = { mode: state.mode, scrolls: scrolls, trigger: trigger };
+    }
+    setMode(mode);
+    var title = node.querySelector(".ed-config-view-title");
+    if (title && typeof title.focus === "function") title.focus();
+  }
+
+  function closeView() {
+    var back = viewReturn;
+    viewReturn = null;
+    if (!back || !setMode) return;
+    // 已被别的路径（宿主激活等）切出配置屏时只清账，不再二次切换。
+    if (!configViewNode(state.mode)) return;
+    setMode(back.mode);
+    back.scrolls.forEach(function (pair) { pair[0].scrollTop = pair[1]; });
+    var trigger = back.trigger;
+    if (trigger && trigger.offsetParent !== null && typeof trigger.focus === "function") {
+      trigger.focus();
+    }
   }
 
   /** 折叠表单的通用开关：同步 hidden、aria-expanded 与按钮文案，展开时聚焦首个输入框。 */
@@ -106,9 +159,11 @@
     return {
       bindSwitcher: bindSwitcher,
       closeModal: closeModal,
+      closeView: closeView,
       modalRestoreFocus: modalRestoreFocus,
       openModal: openModal,
       openModalNode: openModalNode,
+      openView: openView,
       setSwitcher: setSwitcher,
     };
   }

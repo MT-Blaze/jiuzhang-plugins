@@ -493,14 +493,14 @@
   }
 
   function setMode(mode) {
-    // 四屏（军令·查重三栏）：list 批次列表 / review 三栏审核 / pool 旧重题池对比 /
-    // compare 查重三栏（新题源码·新题渲染·原题渲染共用 #edCols，不再单开一屏）。
-    state.mode = mode === "review" ? "review"
-      : (mode === "pool" ? "pool" : (mode === "compare" ? "compare" : "list"));
+    // 六屏：list/review/pool/compare ＋ model_config/ai_config 两只配置内联视图（2026-11-19 起不再做弹窗）。
+    state.mode = ["review", "pool", "compare", "model_config", "ai_config"].indexOf(mode) >= 0 ? mode : "list";
     if (root) root.setAttribute("data-mode", state.mode);
     if (batchesEl) batchesEl.hidden = state.mode !== "list";
     if (colsEl) colsEl.hidden = state.mode !== "review" && state.mode !== "compare";
     if (poolCanvasEl) poolCanvasEl.hidden = state.mode !== "pool";
+    if (deps.dom.modelConfigModalEl) deps.dom.modelConfigModalEl.hidden = state.mode !== "model_config";
+    if (deps.dom.aiConfigModalEl) deps.dom.aiConfigModalEl.hidden = state.mode !== "ai_config";
   }
 
   /** 重新拉一遍批次卡片：未审数、总数与「审完变灰」都以底座那边的账为准。 */

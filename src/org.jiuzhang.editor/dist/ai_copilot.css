@@ -71,13 +71,19 @@
 .ep-ai-note[data-tone="warn"] { color: var(--amber); }
 .ep-ai-note[data-tone="error"] { color: var(--danger); font-weight: 700; }
 
-/* ---------- 双栏弹窗：左密钥池 / 右任务指派 ---------- */
-/* 弹窗整体放大：900px 宽给左右两栏留足余地；内层一律不滚，只有卡片自己滚。
-   高度吃满这一帧（画布 iframe）留给弹窗的余量，四个任务正好一屏放完。 */
+/* ---------- 双栏配置：左密钥池 / 右任务指派 ---------- */
+/* 2026-11-19 起住画布内联视图（.ed-config-view）：卡片吃满画布帧、随画布滚动，
+   内层一律不滚。900px 限宽是旧弹窗时代的口径，视图里由下面的覆盖规则放开。 */
 .ep-ai-card {
   width: min(900px, 100%);
   max-height: calc(100vh - 32px);
   overflow-y: auto;
+}
+
+.ed-config-view .ep-ai-card {
+  width: 100%;
+  max-height: none;
+  overflow-y: visible;
 }
 
 .ep-ai-tip {
@@ -247,7 +253,7 @@
 .ep-ai-input {
   width: 100%;
   min-width: 0;
-  min-height: 32px;
+  min-height: 44px;
   padding: 5px 8px;
   border: 1px solid var(--line-strong);
   border-radius: 5px;

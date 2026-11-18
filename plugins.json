@@ -65,11 +65,11 @@
     {
       "id": "org.jiuzhang.editor",
       "name": "录题工作台",
-      "version": "2.17.0",
+      "version": "2.18.0",
       "kind": "tool",
       "api_version": "1.0",
       "description": "录题工作台：三段式辅助栏。顶部固定当前题私有元数据（题号/题型/难度/分值/考向/标签），中部公共元数据（含年级）随画布滚动收起，底部存库/待审/删除。标签与考向走幽灵胶囊：空胶囊常驻，悬停接光标，打字出带路径搜索，回车取第一条。边缘同步冷蓝呼吸灯。拖入多文件各立独立批次。学校只存 school_id。查重命中亮红呼吸灯，可覆盖/放弃/合并解析二。",
-      "changelog": "1. MinerU·本地逐题解析接线：选中后解析作业自动起本地隔离服务（动态端口＋随机令牌），单题截图逐题交本机解析，试卷不出本机\n2. 一键装并入解析模型预取（standard 档 onnx 小模型＋llama-cpp GGUF 小 VLM，国内 modelscope 源，不需要 torch）；预取没成功首次解析再下，进度见批次日志\n3. 本地服务收口显式停＋端口复验，孤儿零容忍；解析失败显性列清单，不静默回自动、不偷换引擎\n4. 目录去掉「接线在下一卡」门槛注记，就绪态直通逐题本地解析，使用说明按实测后端事实重写",
+      "changelog": "1. 模型配置与 API 配置不再做弹窗：画布主区域本身切换成配置内联视图，无遮罩、无居中卡片、无焦点陷阱，随画布滚动\n2. 视图顶【返回批次】原样恢复先前屏（含滚动位置与触发按钮焦点）；再点同一颗入口即收；两视图互斥，批次列表期间隐藏\n3. Esc 不再关这两处配置屏，真模态（删除确认/剔除清单/覆盖确认等）焦点圈与 Esc 照旧\n4. 配置表单控件触控命中补到 44px，窄画布双栏折单栏，375px 不横向溢出",
       "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip",
       "mirrors": [
         "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip",

@@ -25,7 +25,8 @@
       var dirtyEl = document.getElementById("edDirty");
       var toastEl = document.getElementById("edToast");
       var savedEl = document.getElementById("edSaved");
-      // AI 配置中心与覆盖确认两颗弹窗（终极军令 任务一/三）：住在画布帧，平时 hidden。
+      // API 配置内联视图与覆盖确认弹窗（终极军令 任务一/三）：住在画布帧，平时 hidden。
+      var aiConfigListEl = document.getElementById("epAiConfigList");
       var aiConfigModalEl = document.getElementById("epAiConfigModal");
       var aiOverwriteModalEl = document.getElementById("epAiOverwriteModal");
       // 本地 YOLO 模型选择（按需下载）：整块独立，删掉 ui_model.js 与这段即可下架。
@@ -42,7 +43,7 @@
       var modelConfigListEl = document.getElementById("edModelConfigList");
       var modelConfigMsgEl = document.getElementById("edModelConfigMsg");
       var modelConfigRefreshEl = document.getElementById("edModelConfigRefresh");
-      var modelConfigCloseEl = document.getElementById("edModelConfigClose");
+      var modelConfigBackEl = document.getElementById("edModelConfigBack");
       var poolEl = document.getElementById("edPool");
       var batchNoteEl = document.getElementById("edBatchNote");
       var batchesEl = document.getElementById("edBatches");
@@ -244,6 +245,7 @@
       dirtyEl: dirtyEl,
       toastEl: toastEl,
       savedEl: savedEl,
+      aiConfigListEl: aiConfigListEl,
       aiConfigModalEl: aiConfigModalEl,
       aiOverwriteModalEl: aiOverwriteModalEl,
       modelModalEl: modelModalEl,
@@ -258,7 +260,7 @@
       modelConfigListEl: modelConfigListEl,
       modelConfigMsgEl: modelConfigMsgEl,
       modelConfigRefreshEl: modelConfigRefreshEl,
-      modelConfigCloseEl: modelConfigCloseEl,
+      modelConfigBackEl: modelConfigBackEl,
       poolEl: poolEl,
       batchNoteEl: batchNoteEl,
       batchesEl: batchesEl,

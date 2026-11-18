@@ -58,8 +58,8 @@
   var fieldRanges = coreAiFields.fieldRanges, keyFromPatchId = coreAiFields.keyFromPatchId;
   var makeItem = coreAiFields.makeItem, patchIdFor = coreAiFields.patchIdFor, replaceField = coreAiFields.replaceField;
   var uiModal = window.JzoEditorModal.create({
-    dom: dom,
-    coreState: coreState,
+    dom: dom, coreState: coreState,
+    setMode: function () { return uiBatches.setMode.apply(uiBatches, arguments); },
   });
   var closeModal = uiModal.closeModal, openModal = uiModal.openModal;
   var uiModel = window.JzoEditorModel.create({ dom: dom, dock: dock, dockWarn: dockWarn, hostCall: hostCall, openModal: openModal, closeModal: closeModal });
@@ -373,7 +373,7 @@
 
   // 终极军令 任务一/三：API 配置中心 + 单题/批量识别。独立一整块，可整块下架。
   var uiAiCopilot = window.JzoEditorAiCopilot.create({
-    bindSwitcher: uiModal.bindSwitcher,
+    bindSwitcher: uiModal.bindSwitcher, setSwitcher: uiModal.setSwitcher,
     closeModal: closeModal,
     coreState: coreState,
     dock: dock,
@@ -387,10 +387,10 @@
     markDirty: uiColumns.markDirty,
     metaFor: metaFor,
     openModal: openModal,
+    openView: uiModal.openView, closeView: uiModal.closeView,
     parsedOf: uiColumns.parsedOf,
     publish: publish,
     refreshRow: uiColumns.refreshRow,
-    setSwitcher: uiModal.setSwitcher,
     toast: toast,
     writeBackSourceText: uiColumns.writeBackSourceText,
   });
@@ -415,15 +415,15 @@
   var basketAdd = uiIntake.basketAdd;
   var wireIntake = uiIntake.wireIntake;
 
-  // 模型配置页（可整块下架）：删 ui_model_config.js 与 index.html 的按钮/模态/引用即可；
+  // 模型配置页（可整块下架）：删 ui_model_config.js 与 index.html 的按钮/视图段/引用即可；
   // 模块不在时这里落 null，下拉静态只剩「自动」，解析照走自动瀑布。
   var uiModelConfig = window.JzoEditorModelConfig ? window.JzoEditorModelConfig.create({
     dom: dom,
     dockWarn: dockWarn,
     el: el,
     hostCall: hostCall,
-    openModal: openModal,
-    closeModal: closeModal,
+    coreState: coreState,
+    openView: uiModal.openView, closeView: uiModal.closeView,
     openAiConfig: uiAiCopilot.openConfig,
     downloadModel: uiModel.startFullDownload,
     applyEngines: uiIntake.applyRegistry,
@@ -787,7 +787,7 @@
     setMode: setMode,
     startIdleWatch: startIdleWatch,
     wireIntake: wireIntake,
-    // 配置弹窗与批量识别的画布半边（终极军令 任务一/三）：只在这一帧动手。
+    // 配置视图与批量识别的画布半边（终极军令 任务一/三）：只在这一帧动手。
     wireAiCopilot: uiAiCopilot.wireCanvas,
     // 模型配置页（可整块下架）：模块不在就是 null，协议层按函数有无决定接不接。
     wireModelConfig: uiModelConfig ? uiModelConfig.wire : null,

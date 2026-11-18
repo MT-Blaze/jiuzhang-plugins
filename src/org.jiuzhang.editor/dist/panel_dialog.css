@@ -41,6 +41,45 @@
   flex: 0 0 auto;
 }
 
+/* ---------- 配置内联视图（2026-11-19：模型/API 配置不再做弹窗） ----------
+   画布主区域本身切换成配置屏：无遮罩、无居中、无 aria-modal、无焦点陷阱；
+   视图内联铺在画布帧里随画布滚动，批次列表期间隐藏，【返回批次】原样恢复。
+   视图段与开合分别住 ui_model_config.js / ui_ai_copilot.js，随各自整块下架。 */
+.ed-config-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+
+.ed-config-view-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  flex: none;
+}
+
+.ed-config-view-head .ep-btn { flex: none; }
+
+/* 返回钮命中区补到 44px：外扩按 padding box 算（24px 本体扣 2px 边框），-11px 才够。 */
+.ed-config-view-head .ep-mini-btn::after { inset: -11px 0; }
+
+.ed-config-view-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* 内容卡片吃满画布帧：不再限宽居中，也不带浮层投影；滚动归视图本身。 */
+.ed-config-view .ep-modal-card {
+  width: 100%;
+  box-shadow: none;
+}
+
 /* ---------- 一键剔除重复题：清单弹窗（军令 #31 · 3.5） ---------- */
 .ep-modal-wide {
   width: min(560px, 100%);

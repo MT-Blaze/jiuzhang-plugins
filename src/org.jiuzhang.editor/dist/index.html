@@ -52,10 +52,10 @@
           <p class="ed-batches-hint" id="edBatchesHint">点任意一行进入审核。未审完的批次排在最前，审完的沉到底。</p>
         </div>
         <!-- 终极军令 任务二：API 配置入口放在批次列表右上角——老师一进画布先配模型，
-             再开始录题；弹窗就在这一帧，点击直达，不跨帧发令。 -->
+             再开始录题；配置视图就在这一帧内联展开，点击直达，不跨帧发令。 -->
         <button type="button" class="ep-btn ep-mini-btn ed-batches-ai" id="epAiConfigList"
                 title="密钥池与任务指派">API 配置</button>
-        <!-- 模型配置入口（可整块下架）：删这颗按钮、#edModelConfigModal 与 ui_model_config.js 即可。 -->
+        <!-- 模型配置入口（可整块下架）：删这颗按钮、#edModelConfigModal 视图段与 ui_model_config.js 即可。 -->
         <button type="button" class="ep-btn ep-mini-btn ed-batches-ai" id="epModelConfigList"
                 title="模型就绪状态与下载/指派入口">模型配置</button>
       </div>
@@ -241,13 +241,15 @@
       </div>
     </div>
 
-    <!-- API 配置中心（终极军令 任务一）：双栏只在画布这帧铺得开——辅助栏整宽 300px，
-         塞两个栏就成了两根压扁的柴。平时 hidden，老师点辅助栏顶部【API 配置】才打开；
-         密钥输入框只在这一帧，Key 原文进来就直送底座落 .env，回读永远只有掩码。 -->
-    <div class="ep-modal" id="epAiConfigModal" role="dialog" aria-modal="true"
-         aria-labelledby="epAiConfigTitle" hidden>
+    <!-- API 配置中心（终极军令 任务一；2026-11-19 改画布内联视图）：无遮罩、无居中卡片、无焦点陷阱，
+         内联铺在画布帧里随画布滚动，批次列表期间隐藏，【返回批次】原样恢复；Key 原文直送底座落 .env，回读只有掩码。
+         整块下架：删本视图段、两颗入口按钮、ui_ai_copilot.js 与 ai_copilot.css。 -->
+    <section class="ed-config-view" id="epAiConfigModal" aria-labelledby="epAiConfigTitle" hidden>
+      <div class="ed-config-view-head">
+        <button type="button" class="ep-btn ep-mini-btn ed-config-back" id="epAiConfigBack">返回批次</button>
+        <h3 class="ed-config-view-title" id="epAiConfigTitle" tabindex="-1">API 配置中心</h3>
+      </div>
       <div class="ep-modal-card ep-ai-card">
-        <h3 class="ep-modal-title" id="epAiConfigTitle">API 配置中心</h3>
         <p class="ep-ai-tip">密钥只落本机 .env；列表只显示名称与连通状态。</p>
         <div class="ep-ai-cols">
           <section class="ep-ai-col" aria-label="密钥池">
@@ -276,11 +278,8 @@
           </section>
         </div>
         <p class="ep-ai-msg" id="epAiConfigMsg" role="status"></p>
-        <div class="ep-actions">
-          <button type="button" class="ep-btn" id="epAiConfigClose">关闭</button>
-        </div>
       </div>
-    </div>
+    </section>
 
     <!-- 覆盖确认（任务三 · 覆盖机制）：只在检测到人工修改时出现——绝不后台静默覆盖老师的字。 -->
     <div class="ep-modal" id="epAiOverwriteModal" role="dialog" aria-modal="true"
@@ -314,22 +313,23 @@
       </div>
     </div>
 
-    <!-- 模型配置页（可整块下架）：目录全量 × 三态，只读状态＋触发既有下载/指派动作。
-         删本模态、#epModelConfigList 按钮、panel_model_config.css 与 ui_model_config.js 即可下架。 -->
-    <div class="ep-modal" id="edModelConfigModal" role="dialog" aria-modal="true"
-         aria-labelledby="edModelConfigTitle" hidden>
+    <!-- 模型配置页（可整块下架）：目录全量 × 三态；2026-11-19 改画布内联视图，不做弹窗，随画布滚动、返回原样恢复。
+         删 #epModelConfigList 按钮、本视图段、panel_model_config.css 与 ui_model_config.js 即可下架。 -->
+    <section class="ed-config-view" id="edModelConfigModal" aria-labelledby="edModelConfigTitle" hidden>
+      <div class="ed-config-view-head">
+        <button type="button" class="ep-btn ep-mini-btn ed-config-back" id="edModelConfigBack">返回批次</button>
+        <h3 class="ed-config-view-title" id="edModelConfigTitle" tabindex="-1">模型配置</h3>
+      </div>
       <div class="ep-modal-card ep-model-config-card">
-        <h3 class="ep-modal-title" id="edModelConfigTitle">模型配置</h3>
         <p class="ep-modal-text">就绪的引擎才会出现在解析下拉里；选谁只走谁，失败不偷偷换引擎。</p>
         <div class="ep-model-config-list" id="edModelConfigList" role="list"
              aria-label="模型清单"></div>
         <p class="ep-model-config-msg" id="edModelConfigMsg" role="status"></p>
         <div class="ep-actions">
           <button type="button" class="ep-btn" id="edModelConfigRefresh">刷新状态</button>
-          <button type="button" class="ep-btn" id="edModelConfigClose">关闭</button>
         </div>
       </div>
-    </div>
+    </section>
 
     <div id="edToast" class="ed-toast" role="status" aria-live="polite" data-show="false"></div>
   </div>
@@ -528,7 +528,7 @@
           </div>
           <button type="button" class="ep-btn ep-swap-btn ep-mini-btn" id="epSwap" aria-pressed="false"
                   title="源码与渲染左右互换">布局</button>
-          <!-- API 配置中心（终极军令 任务一）：双栏弹窗住在画布那帧（这一帧只有 300px 宽），
+          <!-- API 配置中心（终极军令 任务一）：双栏内联视图住在画布那帧（这一帧只有 300px 宽），
                这里只负责发一句「打开」，密钥原文与出网全走宿主代持的 ai.* 通道。 -->
           <button type="button" class="ep-btn ep-mini-btn" id="epAiConfig"
                   title="密钥池与任务指派">API 配置</button>
@@ -865,7 +865,7 @@
   <script src="ui_approve.js"></script>
   <script src="ui_modal.js"></script>
   <script src="ui_model.js"></script>
-  <!-- 模型配置页（可整块下架）：删这一行、上面那颗按钮与模态、panel_model_config.css 即可；
+  <!-- 模型配置页（可整块下架）：删这一行、上面那颗按钮与视图段、panel_model_config.css 即可；
        下拉静态只剩「自动」，解析照走自动瀑布。 -->
   <script src="ui_model_config.js"></script>
   <script src="ui_dup.js"></script>
@@ -883,7 +883,7 @@
   <script src="ui_ai.js"></script>
   <script src="ui_topics.js"></script>
   <!-- 终极军令 任务一/三：AI 配置中心与单题/批量识别。独立一块，整块下架只需删这一行脚本、
-       两处 index.html 弹窗、辅助栏两颗入口与 ai_copilot.css。 -->
+       index.html 的 API 配置视图段与覆盖确认弹窗、辅助栏两颗入口与 ai_copilot.css。 -->
   <script src="ui_ai_copilot.js"></script>
   <!-- 录题偏好（可整块下架）：三件高频业务参数住辅助栏，见 ui_settings.js 开头。 -->
   <script src="ui_settings.js"></script>

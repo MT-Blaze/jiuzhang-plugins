@@ -7,8 +7,10 @@
  * MinerU【安装本地 MinerU】经 models.mineru_install 一键装进隔离环境，进度轮询
  * models.mineru_status；YOLO【下载】复用 ui_model.js 通道；云端【去 API 配置指派】。
  * 停用＝下拉不显示＋自动跳过，不卸载；只有就绪且启用的条目进下拉（applyEngines）。
+ * 2026-11-19 起本页是画布内联视图（不做弹窗）：开合走 openView/closeView 整屏切换，
+ * 批次列表期间隐藏、返回原样恢复；数据驱动渲染一行不改。
  * 整块下架：删本文件、panel_model_config.css、index.html 的 #epModelConfigList 按钮、
- * #edModelConfigModal 模态与那一行 script；下拉静态只剩「自动」，解析照走自动瀑布。
+ * #edModelConfigModal 视图段与那一行 script；下拉静态只剩「自动」，解析照走自动瀑布。
  */
 (function (global) {
   "use strict";
@@ -19,17 +21,18 @@
     var dockWarn = deps.dockWarn;
     var hostCall = deps.hostCall;
     var el = deps.el;
-    var openModal = deps.openModal;
-    var closeModal = deps.closeModal;
+    var state = deps.coreState.state;
+    var openView = deps.openView;
+    var closeView = deps.closeView;
     var openAiConfig = deps.openAiConfig;
     var downloadModel = deps.downloadModel;
     var applyEngines = deps.applyEngines;
     var dom = deps.dom;
-    var modalEl = dom.modelConfigModalEl;
+    var viewEl = dom.modelConfigModalEl;
     var listEl = dom.modelConfigListEl;
     var msgEl = dom.modelConfigMsgEl;
     var refreshEl = dom.modelConfigRefreshEl;
-    var closeEl = dom.modelConfigCloseEl;
+    var backEl = dom.modelConfigBackEl;
     var buttonEl = dom.modelConfigBtnEl;
 
     var entries = [];
@@ -180,7 +183,6 @@
           var assignBtn = el("button", "ep-btn ep-mini-btn ep-model-config-act", "去 API 配置指派");
           assignBtn.type = "button";
           assignBtn.addEventListener("click", function () {
-            closeModal(modalEl);
             if (typeof openAiConfig === "function") openAiConfig();
           });
           row.appendChild(assignBtn);
@@ -291,8 +293,10 @@
     }
 
     function open() {
-      if (!modalEl) return;
-      openModal(modalEl);
+      if (!viewEl) return;
+      // 再点同一颗入口＝收视图回批次；视图互斥与状态还原归 openView/closeView。
+      if (state.mode === "model_config") { closeView(); return; }
+      openView("model_config");
       refresh();
     }
 
@@ -301,7 +305,7 @@
       wired = true;
       if (buttonEl) buttonEl.addEventListener("click", open);
       if (refreshEl) refreshEl.addEventListener("click", function () { refresh(); });
-      if (closeEl) closeEl.addEventListener("click", function () { closeModal(modalEl); });
+      if (backEl) backEl.addEventListener("click", closeView);
       refresh();
     }
 

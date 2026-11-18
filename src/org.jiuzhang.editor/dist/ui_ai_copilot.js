@@ -1,12 +1,12 @@
 /**
  * ui_ai_copilot.js —— 终极军令 任务一/任务三：API 配置中心 + 单题/批量 AI 识别。
  *
- * 一块可整块下架的 AI 能力：删掉本文件、index.html 里的一行 <script> 与两处弹窗、
- * 辅助栏两颗入口、ai_copilot.css，工作台即回到「只有录题与审核」的原样。
+ * 一块可整块下架的 AI 能力：删掉本文件、index.html 里的一行 <script>、API 配置视图段
+ * 与覆盖确认弹窗、辅助栏两颗入口、ai_copilot.css，工作台即回到「只有录题与审核」的原样。
  *
  * 分工：
  *   辅助栏（sidebar.right）只放两颗入口——顶部【API 配置】与底部【批量 AI 识别全卷】；
- *   画布（stage.center）才拿得到题图、渲染行与双栏空间，弹窗与逐题动作全在这一帧。
+ *   画布（stage.center）才拿得到题图、渲染行与双栏空间，配置视图与逐题动作全在这一帧。
  * 两帧之间只走既有主题 editor.batch_review（action: ai_config / ai_batch），不新增总线主题。
  *
  * 铁律：插件不碰 Key 原文的存取、不联网、不落本地存储；一律经宿主 ai.* 通道，
@@ -16,8 +16,7 @@
   "use strict";
 
   function create(deps) {
-    var bindSwitcher = deps.bindSwitcher;
-    var setSwitcher = deps.setSwitcher;
+    var bindSwitcher = deps.bindSwitcher, setSwitcher = deps.setSwitcher;
     var coreState = deps.coreState;
     var state = coreState.state;
     var dom = deps.dom;
@@ -28,8 +27,8 @@
     var errorDetail = deps.errorDetail;
     var toast = deps.toast;
     var publish = deps.publish;
-    var openModal = deps.openModal;
-    var closeModal = deps.closeModal;
+    var openModal = deps.openModal, closeModal = deps.closeModal;
+    var openView = deps.openView, closeView = deps.closeView;
     var itemImage = deps.itemImage;
     var parsedOf = deps.parsedOf;
     var documentFor = deps.documentFor;
@@ -664,9 +663,10 @@
 
     function openConfig() {
       if (!dom.aiConfigModalEl) return;
+      if (state.mode === "ai_config") { closeView(); return; }
       resetAccountForm(true);
       setMsg("正在读取密钥池…", "info");
-      openModal(dom.aiConfigModalEl);
+      openView("ai_config");
       loadCluster().then(function () {
         setMsg("", "info");
       }, configFailed("读取配置失败"));
@@ -698,8 +698,8 @@
       if (listConfig) listConfig.addEventListener("click", openConfig);
       var modal = dom.aiConfigModalEl;
       if (!modal) return;
-      var close = document.getElementById("epAiConfigClose");
-      if (close) close.addEventListener("click", function () { closeModal(modal); });
+      var back = document.getElementById("epAiConfigBack");
+      if (back) back.addEventListener("click", closeView);
       var save = document.getElementById("epAiSaveAccount");
       if (save) save.addEventListener("click", saveAccount);
       var reset = document.getElementById("epAiResetAccount");
