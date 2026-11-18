@@ -1,7 +1,7 @@
 {
   "index_version": "1.0",
   "name": "九章算子官方插件索引",
-  "updated_at": "2026-11-17",
+  "updated_at": "2026-11-19",
   "host": {
     "version": "1.2.0",
     "zip_url": "https://gh-proxy.com/https://github.com/MT-Blaze/jiuzhang-operator/archive/refs/heads/main.zip",
@@ -65,10 +65,11 @@
     {
       "id": "org.jiuzhang.editor",
       "name": "录题工作台",
-      "version": "2.15.0",
+      "version": "2.16.0",
       "kind": "tool",
       "api_version": "1.0",
       "description": "录题工作台：三段式辅助栏。顶部固定当前题私有元数据（题号/题型/难度/分值/考向/标签），中部公共元数据（含年级）随画布滚动收起，底部存库/待审/删除。标签与考向走幽灵胶囊：空胶囊常驻，悬停接光标，打字出带路径搜索，回车取第一条。边缘同步冷蓝呼吸灯。拖入多文件各立独立批次。学校只存 school_id。查重命中亮红呼吸灯，可覆盖/放弃/合并解析二。",
+      "changelog": "1. 模型目录归插件：catalog.toml 随包发行，16 条模型的三态规则、人话说明、显存门槛与路由注记全由目录声明，底座只做通用规则解释\n2. 声明 models.catalog 能力，模型勾选代笔只写本插件安装目录，老师偏好（model_prefs.toml）升级时随教师财产保留\n3. 新包覆盖旧目录＝清单可更新：目录随插件升级刷新，勾选与默认引擎不丢\n4. 引擎队列与旧名兼容（ocr/cloud/full_ocr）改由目录 aliases/plan 数据声明，底座不再硬编码模型名单",
       "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip",
       "mirrors": [
         "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip",
