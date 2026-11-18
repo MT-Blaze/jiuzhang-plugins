@@ -62,6 +62,7 @@
     var state = coreState.state;
     var wireIntake = deps.wireIntake;
     var wireAiCopilot = deps.wireAiCopilot;
+    var wireModelConfig = deps.wireModelConfig;
     var openAiConfig = deps.openAiConfig;
     var runAiBatch = deps.runAiBatch;
     var runAiBatchSolve = deps.runAiBatchSolve;
@@ -238,6 +239,8 @@
       if (sourceHintEl) sourceHintEl.textContent = "源码 · 整段源码直接编辑";
       startIdleWatch();
       if (typeof wireAiCopilot === "function") wireAiCopilot();
+      // 模型配置页（可整块下架）：激活即体检一次，把就绪引擎灌进两个下拉。
+      if (typeof wireModelConfig === "function") wireModelConfig();
       // 首屏就是批次列表：中转站里有几批就画几批，空着就空着，不造假题。
       refreshBatches();
       restoreWorklist().then(function () {

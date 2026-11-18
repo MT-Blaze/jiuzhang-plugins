@@ -16,6 +16,7 @@
     var aiConfigModalEl = deps.dom.aiConfigModalEl;
     var aiOverwriteModalEl = deps.dom.aiOverwriteModalEl;
     var modelModalEl = deps.dom.modelModalEl;
+    var modelConfigModalEl = deps.dom.modelConfigModalEl;
 
   // ---------- 弹窗：彻底删除（焦点圈住、Esc 可关、关掉还焦） ----------
   // 查重对比浮层不在这套里：它按军令 #23 一颗按钮都不放（画布里只许有题目内容），
@@ -33,6 +34,8 @@
     if (aiOverwriteModalEl && !aiOverwriteModalEl.hidden) return aiOverwriteModalEl;
     // 本地模型下载选择（按需下载）：Esc 能关、焦点圈得住。
     if (modelModalEl && !modelModalEl.hidden) return modelModalEl;
+    // 模型配置页（可整块下架）：节点不在就跳过，焦点陷阱照旧。
+    if (modelConfigModalEl && !modelConfigModalEl.hidden) return modelConfigModalEl;
     return null;
   }
 

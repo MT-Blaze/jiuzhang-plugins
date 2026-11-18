@@ -200,6 +200,8 @@
     wire();
     return {
       ensureLayoutModel: ensureLayoutModel,
+      // 模型配置页的【下载】复用同一条通道：发起＋进度播报都在这里，不另开炉灶。
+      startFullDownload: startDownload,
       wire: wire,
     };
   }

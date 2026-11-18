@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="panel_meta.css">
   <link rel="stylesheet" href="panel_dialog.css">
   <link rel="stylesheet" href="panel_model.css">
+  <!-- 模型配置页（可整块下架）：删这一行与下面 ui_model_config.js 那一行即可。 -->
+  <link rel="stylesheet" href="panel_model_config.css">
   <link rel="stylesheet" href="panel_pool.css">
   <link rel="stylesheet" href="dup_compare.css">
   <link rel="stylesheet" href="panel_capsule.css">
@@ -53,6 +55,9 @@
              再开始录题；弹窗就在这一帧，点击直达，不跨帧发令。 -->
         <button type="button" class="ep-btn ep-mini-btn ed-batches-ai" id="epAiConfigList"
                 title="密钥池与任务指派">API 配置</button>
+        <!-- 模型配置入口（可整块下架）：删这颗按钮、#edModelConfigModal 与 ui_model_config.js 即可。 -->
+        <button type="button" class="ep-btn ep-mini-btn ed-batches-ai" id="epModelConfigList"
+                title="模型就绪状态与下载/指派入口">模型配置</button>
       </div>
       <div class="ed-batches-body">
         <div class="ed-batch-col">
@@ -65,17 +70,14 @@
              每项带一个 × 移除；底部的【开始解析】才是唯一的建批次入口。 -->
         <div class="ed-basket-col">
           <!-- 双引擎选择（可整块下架：删掉这段与 layout.css 的 .ed-basket-engines 即可）。
-               原生 title 悬停即给一行提示；只影响下一次【开始解析】，旧批次绝不重跑。 -->
+               静态只留「自动」；就绪引擎由模型配置页按宿主 registry 动态注入（ui_model_config.js），
+               没配置/没下载/没指派的条目不进下拉。只影响下一次【开始解析】，旧批次绝不重跑。 -->
           <div class="ed-basket-engines" aria-label="解析引擎">
             <label class="ed-engine">
               <span class="ed-engine-label">版面引擎</span>
               <select class="ed-engine-select" id="edLayoutEngine">
                 <option value="auto" selected
-                        title="自动：先本地文本层探路，失败交本机 YOLO，再失败交云端。">自动</option>
-                <option value="yolo"
-                        title="YOLO：本地文本层失败后强制用本机 YOLO，仍失败再交云端。">YOLO</option>
-                <option value="cloud"
-                        title="云端：本地文本层失败后跳过 YOLO，直接交云端视觉模型。">云端</option>
+                        title="自动：图片卷先本地 OCR 切题，不达标退回文本层 → 本机 YOLO → 云端。">自动</option>
               </select>
             </label>
             <label class="ed-engine">
@@ -83,10 +85,6 @@
               <select class="ed-engine-select" id="edRecognizeEngine">
                 <option value="auto" selected
                         title="自动：本地先提取；坏题交 AI 修补，坏题率≥30% 转全量，最后 MinerU 兜底。">自动</option>
-                <option value="full_ocr"
-                        title="全量OCR：整批单题截图并发交给视觉模型，失败再交 MinerU。">全量OCR</option>
-                <option value="mineru"
-                        title="MinerU：本地切好单题截图后，逐题发送 MinerU 云端解析。">MinerU</option>
               </select>
             </label>
           </div>
@@ -312,6 +310,23 @@
         <div class="ep-actions ep-model-actions">
           <button type="button" class="ep-btn ep-btn-primary" id="edModelFull">下载满血版</button>
           <button type="button" class="ep-btn ep-btn-ghost" id="edModelCancel">暂不下载，交云端</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 模型配置页（可整块下架）：目录全量 × 三态，只读状态＋触发既有下载/指派动作。
+         删本模态、#epModelConfigList 按钮、panel_model_config.css 与 ui_model_config.js 即可下架。 -->
+    <div class="ep-modal" id="edModelConfigModal" role="dialog" aria-modal="true"
+         aria-labelledby="edModelConfigTitle" hidden>
+      <div class="ep-modal-card ep-model-config-card">
+        <h3 class="ep-modal-title" id="edModelConfigTitle">模型配置</h3>
+        <p class="ep-modal-text">就绪的引擎才会出现在解析下拉里；选谁只走谁，失败不偷偷换引擎。</p>
+        <div class="ep-model-config-list" id="edModelConfigList" role="list"
+             aria-label="模型清单"></div>
+        <p class="ep-model-config-msg" id="edModelConfigMsg" role="status"></p>
+        <div class="ep-actions">
+          <button type="button" class="ep-btn" id="edModelConfigRefresh">刷新状态</button>
+          <button type="button" class="ep-btn" id="edModelConfigClose">关闭</button>
         </div>
       </div>
     </div>
@@ -850,6 +865,9 @@
   <script src="ui_approve.js"></script>
   <script src="ui_modal.js"></script>
   <script src="ui_model.js"></script>
+  <!-- 模型配置页（可整块下架）：删这一行、上面那颗按钮与模态、panel_model_config.css 即可；
+       下拉静态只剩「自动」，解析照走自动瀑布。 -->
+  <script src="ui_model_config.js"></script>
   <script src="ui_dup.js"></script>
   <!-- 军令 #32 · 第五步：琥珀灯判定（两帧共用）→ 重题池画布那一屏 → 重题池辅助栏那一半。
        顺序按依赖排：面板半块要用画布半块的开合口径，协议块始终在最后。 -->

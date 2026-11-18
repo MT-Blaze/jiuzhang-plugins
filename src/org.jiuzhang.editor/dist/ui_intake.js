@@ -37,24 +37,71 @@
   var INGEST_TIMEOUT_MS = 180000;
   // 双引擎只影响**下一次**开始解析；已立起来的批次绝不重跑。
   // 版面管「框在哪」，识别管「字是什么」，各选各的，互不替代。
-  var LAYOUT_ENGINES = ["auto", "yolo", "cloud"];
-  var RECOGNIZE_ENGINES = ["auto", "full_ocr", "mineru"];
+  // 就绪清单与名字单源宿主 registry（models.registry_status），由模型配置页注入；
+  // 静态只留「自动」——配置页整块下架后，解析照走自动瀑布。
+  var layoutAllowed = ["auto"];
+  var recognizeAllowed = ["auto"];
+  var engineNames = { auto: "自动" };
+  var engineTitles = {};
+  var AUTO_TITLES = {
+    edLayoutEngine: "自动：图片卷先本地 OCR 切题，不达标退回文本层 → 本机 YOLO → 云端。",
+    edRecognizeEngine: "自动：本地先提取；坏题交 AI 修补，坏题率≥30% 转全量，最后 MinerU 兜底。"
+  };
 
   function currentLayoutEngine() {
     var picked = String(state.ingestLayoutEngine || "auto");
-    return LAYOUT_ENGINES.indexOf(picked) < 0 ? "auto" : picked;
+    return layoutAllowed.indexOf(picked) < 0 ? "auto" : picked;
   }
 
   function currentRecognizeEngine() {
     var picked = String(state.ingestRecognizeEngine || "auto");
-    return RECOGNIZE_ENGINES.indexOf(picked) < 0 ? "auto" : picked;
+    return recognizeAllowed.indexOf(picked) < 0 ? "auto" : picked;
   }
 
   function engineLabel(kind, key) {
-    if (kind === "layout") {
-      return { auto: "自动", yolo: "YOLO", cloud: "云端" }[key] || "自动";
+    return engineNames[key] || "自动";
+  }
+
+  function paintEngineOptions() {
+    [["edLayoutEngine", layoutAllowed, currentLayoutEngine],
+     ["edRecognizeEngine", recognizeAllowed, currentRecognizeEngine]].forEach(function (spec) {
+      var select = document.getElementById(spec[0]);
+      if (!select) return;
+      var current = spec[2]();
+      select.textContent = "";
+      spec[1].forEach(function (id) {
+        var option = document.createElement("option");
+        option.value = id;
+        option.textContent = engineNames[id] || id;
+        option.title = id === "auto" ? AUTO_TITLES[spec[0]] : (engineTitles[id] || "");
+        select.appendChild(option);
+      });
+      select.value = current;
+    });
+  }
+
+  /** registry 单源：只有就绪条目进下拉；残留的未就绪值当场归一回 auto（原因由宿主闸口进批次 note）。 */
+  function applyRegistry(entries) {
+    layoutAllowed = ["auto"];
+    recognizeAllowed = ["auto"];
+    engineNames = { auto: "自动" };
+    engineTitles = {};
+    (entries || []).forEach(function (entry) {
+      var id = String((entry && entry.id) || "");
+      if (!id || id === "auto" || entry.state !== "ready") return;
+      var capability = String(entry.capability || "");
+      engineNames[id] = String(entry.name || id);
+      engineTitles[id] = String(entry.summary || "");
+      if (capability === "layout" || capability === "both") layoutAllowed.push(id);
+      if (capability === "recognize" || capability === "both") recognizeAllowed.push(id);
+    });
+    if (layoutAllowed.indexOf(String(state.ingestLayoutEngine || "")) < 0) {
+      state.ingestLayoutEngine = "auto";
     }
-    return { auto: "自动", full_ocr: "全量OCR", mineru: "MinerU" }[key] || "自动";
+    if (recognizeAllowed.indexOf(String(state.ingestRecognizeEngine || "")) < 0) {
+      state.ingestRecognizeEngine = "auto";
+    }
+    paintEngineOptions();
   }
 
   function fileEntry(file, fallbackName) {
@@ -75,9 +122,9 @@
   function ingestEntries(entries, layoutEngine, recognizeEngine) {
     var files = (entries || []).filter(function (entry) { return entry && entry.data_url; });
     if (!files.length) return Promise.resolve(null);
-    var pickedLayout = LAYOUT_ENGINES.indexOf(String(layoutEngine || "")) < 0
+    var pickedLayout = layoutAllowed.indexOf(String(layoutEngine || "")) < 0
       ? currentLayoutEngine() : String(layoutEngine);
-    var pickedRecognize = RECOGNIZE_ENGINES.indexOf(String(recognizeEngine || "")) < 0
+    var pickedRecognize = recognizeAllowed.indexOf(String(recognizeEngine || "")) < 0
       ? currentRecognizeEngine() : String(recognizeEngine);
     return hostCall("ingest.files", {
       files: files,
@@ -167,9 +214,10 @@
       if (recognizeSelect) recognizeSelect.value = currentRecognizeEngine();
     }
 
-    function bindSelect(select, kind, allowed, store, current) {
+    function bindSelect(select, kind, store, current) {
       if (!select) return;
       select.addEventListener("change", function () {
+        var allowed = kind === "layout" ? layoutAllowed : recognizeAllowed;
         var key = String(select.value || "auto");
         store(allowed.indexOf(key) < 0 ? "auto" : key);
         paint();
@@ -182,9 +230,9 @@
       });
     }
 
-    bindSelect(layoutSelect, "layout", LAYOUT_ENGINES,
+    bindSelect(layoutSelect, "layout",
       function (key) { state.ingestLayoutEngine = key; }, currentLayoutEngine);
-    bindSelect(recognizeSelect, "recognize", RECOGNIZE_ENGINES,
+    bindSelect(recognizeSelect, "recognize",
       function (key) { state.ingestRecognizeEngine = key; }, currentRecognizeEngine);
     paint();
   }
@@ -570,6 +618,7 @@
     return {
       INGEST_TIMEOUT_MS: INGEST_TIMEOUT_MS,
       THUMB_SIDE: THUMB_SIDE,
+      applyRegistry: applyRegistry,
       basketAdd: basketAdd,
       basketBusy: basketBusy,
       basketClear: basketClear,

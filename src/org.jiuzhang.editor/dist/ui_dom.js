@@ -36,6 +36,13 @@
       var modelBarEl = document.getElementById("edModelBar");
       var modelFullEl = document.getElementById("edModelFull");
       var modelCancelEl = document.getElementById("edModelCancel");
+      // 模型配置页（可整块下架）：删掉 ui_model_config.js 与这段即可，取不到节点全是 null。
+      var modelConfigBtnEl = document.getElementById("epModelConfigList");
+      var modelConfigModalEl = document.getElementById("edModelConfigModal");
+      var modelConfigListEl = document.getElementById("edModelConfigList");
+      var modelConfigMsgEl = document.getElementById("edModelConfigMsg");
+      var modelConfigRefreshEl = document.getElementById("edModelConfigRefresh");
+      var modelConfigCloseEl = document.getElementById("edModelConfigClose");
       var poolEl = document.getElementById("edPool");
       var batchNoteEl = document.getElementById("edBatchNote");
       var batchesEl = document.getElementById("edBatches");
@@ -246,6 +253,12 @@
       modelBarEl: modelBarEl,
       modelFullEl: modelFullEl,
       modelCancelEl: modelCancelEl,
+      modelConfigBtnEl: modelConfigBtnEl,
+      modelConfigModalEl: modelConfigModalEl,
+      modelConfigListEl: modelConfigListEl,
+      modelConfigMsgEl: modelConfigMsgEl,
+      modelConfigRefreshEl: modelConfigRefreshEl,
+      modelConfigCloseEl: modelConfigCloseEl,
       poolEl: poolEl,
       batchNoteEl: batchNoteEl,
       batchesEl: batchesEl,

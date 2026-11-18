@@ -415,6 +415,20 @@
   var basketAdd = uiIntake.basketAdd;
   var wireIntake = uiIntake.wireIntake;
 
+  // 模型配置页（可整块下架）：删 ui_model_config.js 与 index.html 的按钮/模态/引用即可；
+  // 模块不在时这里落 null，下拉静态只剩「自动」，解析照走自动瀑布。
+  var uiModelConfig = window.JzoEditorModelConfig ? window.JzoEditorModelConfig.create({
+    dom: dom,
+    dockWarn: dockWarn,
+    el: el,
+    hostCall: hostCall,
+    openModal: openModal,
+    closeModal: closeModal,
+    openAiConfig: uiAiCopilot.openConfig,
+    downloadModel: uiModel.startFullDownload,
+    applyEngines: uiIntake.applyRegistry,
+  }) : null;
+
   var uiMetaHist = window.JzoEditorMetaHist.create({
     dom: dom,
     dockWarn: dockWarn,
@@ -775,6 +789,8 @@
     wireIntake: wireIntake,
     // 配置弹窗与批量识别的画布半边（终极军令 任务一/三）：只在这一帧动手。
     wireAiCopilot: uiAiCopilot.wireCanvas,
+    // 模型配置页（可整块下架）：模块不在就是 null，协议层按函数有无决定接不接。
+    wireModelConfig: uiModelConfig ? uiModelConfig.wire : null,
     openAiConfig: uiAiCopilot.openConfig,
     runAiBatch: uiAiCopilot.runBatch,
     runAiBatchSolve: uiAiCopilot.runBatchSolve,
