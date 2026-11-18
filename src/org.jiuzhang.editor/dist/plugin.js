@@ -257,6 +257,14 @@
     setMode: function () { return uiBatches.setMode.apply(uiBatches, arguments); },
   });
 
+  // 失败显性化（2026-11-18 卡）：批次徽标/页徽标/增量播报，独立整块可下架。
+  var uiFailureSurface = window.JzoFailureSurface.create({
+    coreState: coreState, dock: dock, dockWarn: dockWarn, dom: dom, el: el, publish: publish,
+    // 循环引用：openBatch 归更下面的 uiBatches、jumpTo 归更下面的 uiColumns。
+    openBatch: function () { return uiBatches.openBatch.apply(uiBatches, arguments); },
+    jumpTo: function () { return uiColumns.jumpTo.apply(uiColumns, arguments); },
+  });
+
   var uiBatches = window.JzoEditorBatches.create({
     dom: dom,
     buildExamSource: buildExamSource,
@@ -281,6 +289,8 @@
     renderAll: function () { return uiColumns.renderAll.apply(uiColumns, arguments); },
     // 独立的整批删除按钮模块（可整块下架）。
     renderDeleteBatchButton: uiBatchDelete.renderDeleteBatchButton,
+    // 失败徽标+清单（可整块下架）。
+    renderBatchFailure: uiFailureSurface.renderBatchBadge,
     toast: toast,
     validateForSave: validateForSave,
     settings: uiSettings,
@@ -350,6 +360,8 @@
     amberReasons: uiAmber.amberReasons,
     metaFor: metaFor,
     metaStrip: uiMetaStrip,
+    // 原卷页失败徽标（可整块下架）。
+    renderPageFailure: uiFailureSurface.renderPageBadge,
     toast: toast,
     coreState: coreState,
   });
@@ -394,6 +406,8 @@
     panelSay: panelSay,
     publish: publish,
     refreshBatches: refreshBatches,
+    // 失败显性化增量播报（可整块下架）。
+    surfaceReport: uiFailureSurface.reportRoute,
     // 循环引用：切图台排在更下面的 uiCrop 块，本块只能等它就位后再问它开没开。
     cropOpen: function () { return uiCrop.isOpen(); },
     coreState: coreState,

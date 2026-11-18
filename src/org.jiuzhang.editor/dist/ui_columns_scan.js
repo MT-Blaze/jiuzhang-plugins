@@ -15,6 +15,8 @@
     var toast = deps.toast;
     var openCrop = deps.openCrop;
     var imageBodyEl = deps.imageBodyEl;
+    // 可选的失败页徽标（失败显性化卡）：没交就当不存在，绿框语义一处不碰。
+    var renderPageFailure = deps.renderPageFailure || null;
 
     /** 一页原卷 → 切图台认的那张「格子」：框选后直接切出新题，不配给任何已有题。 */
     function pageCropItem(page, index) {
@@ -108,6 +110,7 @@
       });
       tools.appendChild(cropBtn);
       frame.appendChild(tools);
+      if (renderPageFailure) renderPageFailure(page, pageNo, frame, cell);
       cell.appendChild(frame);
       return cell;
     }

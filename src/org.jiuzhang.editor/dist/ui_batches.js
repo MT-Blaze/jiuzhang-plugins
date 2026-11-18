@@ -48,6 +48,8 @@
     var renderAll = deps.renderAll;
     // 可选的整批删除按钮：交进来就画，没交就当这颗按钮不存在（模块可整块下架）。
     var renderDeleteBatchButton = deps.renderDeleteBatchButton || function () {};
+    // 可选的失败徽标+清单（失败显性化卡）：同上，没交就当不存在。
+    var renderBatchFailure = deps.renderBatchFailure || function () {};
     var root = deps.dom.root;
     var state = coreState.state;
     var toast = deps.toast;
@@ -255,6 +257,8 @@
       }
       // 删除整批：独立渲染，下架与否只动这一行。
       renderDeleteBatchButton(card, row);
+      // 失败徽标与清单：独立渲染，下架与否只动这一行。
+      renderBatchFailure(card, row);
       // 行改成了 div（多一颗按钮后按钮不能再套按钮），整行的内边距与缝隙就没人接了：
       // hover 还亮着、点下去却不动，老师只当卡了。这里补一层行级点击，
       // 两颗按钮已经各自绑好动作，只收它们没吃到的那部分。

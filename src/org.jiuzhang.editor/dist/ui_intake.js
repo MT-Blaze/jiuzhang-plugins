@@ -20,6 +20,8 @@
     var panelSay = deps.panelSay;
     var publish = deps.publish;
     var refreshBatches = deps.refreshBatches;
+    // 失败显性化（可整块下架）：交进来就把 progress/failures 增量播进底栏。
+    var surfaceReport = deps.surfaceReport || null;
     var state = coreState.state;
     var basketEl = deps.dom.basketEl;
     var basketEmptyEl = deps.dom.basketEmptyEl;
@@ -139,6 +141,7 @@
             var level = String((item && item.level) || "info");
             dock(text, level === "error" ? "error" : "info", "editor.layout");
           });
+          if (surfaceReport) surfaceReport(id, route);
           if (!route.done) waiting += 1;
         });
         if (!waiting || polls >= maxPolls) {

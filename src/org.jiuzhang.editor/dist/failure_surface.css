@@ -1,0 +1,134 @@
+/* failure_surface.css —— ingest 失败显性化（2026-11-18 卡）的样式整块。
+   与 ui_failure_surface.js 同进退：下架时删本文件与 index.html 那一行 link 即可。
+   状态一律图标+数字+文字，不只靠颜色（AGENTS §6）。 */
+
+/* ---------- 批次卡徽标与内联失败清单 ---------- */
+
+.ed-batch-failbadge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid #b27a30;
+  border-radius: 6px;
+  background: rgba(178, 122, 48, 0.10);
+  color: #8a5a1e;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ed-batch-failbadge:hover {
+  background: rgba(178, 122, 48, 0.18);
+}
+
+.ed-batch-failbadge:focus-visible,
+.ed-fail-btn:focus-visible,
+.ed-page-failbadge:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.ed-fail-icon {
+  flex: none;
+  font-size: 13px;
+  line-height: 1;
+}
+
+.ed-fail-list {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  border-top: 1px dashed var(--line-strong);
+}
+
+.ed-fail-item {
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-left: 3px solid #b27a30;
+  border-radius: 6px;
+  background: var(--card);
+}
+
+.ed-fail-head {
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.ed-fail-reason {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
+.ed-fail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ed-fail-btn {
+  padding: 4px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ed-fail-btn:hover:not(:disabled) {
+  border-color: #b27a30;
+  color: #8a5a1e;
+}
+
+.ed-fail-btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ---------- 原卷页徽标与定位描边 ---------- */
+
+/* 浮在页左上角，与右上角的【框选切题】各占一角，互不遮挡。 */
+.ed-page-failbadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+  padding: 0 9px;
+  border: 1px solid #a33d2a;
+  border-radius: 6px;
+  background: rgba(176, 54, 54, 0.92);
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ed-page-failbadge:hover {
+  background: #a33d2a;
+}
+
+/* 「定位原卷页」落点：粗描边圈住整页，徽标本身已带图标+数字。 */
+.ed-page-cell.is-fail-located .ed-img-frame {
+  outline: 3px solid #b27a30;
+  outline-offset: -3px;
+}

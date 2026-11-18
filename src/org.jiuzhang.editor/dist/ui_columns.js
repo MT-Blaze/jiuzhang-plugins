@@ -52,6 +52,8 @@
       toast: toast,
       openCrop: openCrop,
       imageBodyEl: imageBodyEl,
+      // 失败显性化（可整块下架）：原卷页徽标由组合根交进来，没交就不画。
+      renderPageFailure: deps.renderPageFailure || null,
     });
     var emptyColumnNote = scan.emptyColumnNote;
     var renderScanGallery = scan.renderScanGallery;

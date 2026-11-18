@@ -21,6 +21,8 @@
   <link rel="stylesheet" href="ai_copilot.css">
   <link rel="stylesheet" href="panel_biz.css">
   <link rel="stylesheet" href="effects.css">
+  <!-- 失败显性化（可整块下架）：删这一行与下面 ui_failure_surface.js 那一行即可。 -->
+  <link rel="stylesheet" href="failure_surface.css">
 </head>
 <body>
   <!-- 画布实例（stage.center）：两屏。
@@ -872,6 +874,7 @@
   <script src="core_protocol.js"></script>
   <script src="ui_boot.js"></script>
   <script src="dev_probe_api.js"></script>
+  <script src="ui_failure_surface.js"></script>
   <script src="plugin.js"></script>
 </body>
 </html>
