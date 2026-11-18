@@ -105,13 +105,14 @@ capability = "recognize"
 min_vram = 0
 can_cpu = true
 summary = "本地 MinerU 解析，试卷不出本机；一键装进 engines/mineru/ 隔离环境。"
-summary_usage = "干啥：本地 MinerU 解析题图，试卷不出本机。准不准：与云端同源引擎，印刷公式强。快慢：首次安装要下依赖（约 1–2GB），解析看本机配置。吃不吃卡：可选，Windows 默认 DirectML 加速，无需 NVIDIA 卡。免不免费：免费开源，装进独立环境不碰底座。现状：本轮先交付一键装与体检，逐题解析接线在下一卡，装好前请继续用云端 MinerU。"
-gate_note = "本地座已装好，逐题解析接线（本地服务编排）在下一卡，本次先走自动瀑布，云端 MinerU 兜底。"
+summary_usage = "干啥：本地 MinerU 解析题图，试卷不出本机。准不准：与云端同源引擎，印刷公式强。快慢：首次安装要下依赖（约 1–2GB）并预取解析模型（约 1–3GB，国内镜像）；预取没成功就在首次解析时再下，CPU 解析偏慢，单题最长等 15 分钟。吃不吃卡：可选，Windows 小模型走 DirectML 加速，无需 NVIDIA 卡；standard 档带本地小 VLM（llama-cpp 跑 GGUF，不需要 torch，VLM 走 CPU 稳跑）。免不免费：免费开源，装进独立环境不碰底座。现状：逐题本地解析已接线，选中后解析作业自动起本地服务，失败显性列清单、不偷换引擎。"
 rule = "mineru_local"
-ready_detail = "已安装（{version}），隔离环境体检通过；逐题解析接线在下一卡，暂由云端 MinerU 兜底。"
+ready_detail = "已安装（{version}），隔离环境体检通过；逐题本地解析已接线，选中后解析作业自动起本地服务，试卷不出本机。"
 missing_detail = "未安装。点【安装本地 MinerU】一键装进隔离环境（国内镜像）。"
 broken_detail = "{message}"
 install_error_detail = "安装失败：{message}"
+plan_recognize = ["mineru_local"]
+route_note_recognize = "识别：只交本地 MinerU，本地切好单题截图后逐题交本机服务解析，失败不降级。"
 
 [[entry]]
 id = "vlm_qwen"
