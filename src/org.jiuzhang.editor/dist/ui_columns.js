@@ -143,7 +143,6 @@
     return cell;
   }
 
-
   /** 源码：一整段 exam-zh 源码，可编辑——它是唯一的录入面。 */
   function renderSourceCell(item, index) {
     if (state.format === "boxed") return renderBoxedCell(item, index);
@@ -534,11 +533,15 @@
     });
     var started = Date.now();
     coreRich.resetMathCount();
+    // 定位描边跨重渲染存活：选区回声的 debounce 会再全量重建左栏，高亮不能随旧节点丢。
+    var located = imageBodyEl.querySelector(".ed-page-cell.is-fail-located");
     imageBodyEl.textContent = "";
     sourceBodyEl.textContent = "";
     renderBodyEl.textContent = "";
     imageBodyEl.classList.toggle("is-scan-gallery", Boolean(state.scanBatch));
     if (state.scanBatch) renderScanGallery();
+    if (located) located = imageBodyEl.querySelector('.ed-page-cell[data-page-index="' + located.getAttribute("data-page-index") + '"]');
+    if (located) located.classList.add("is-fail-located");
     state.items.forEach(function (item, index) {
       if (!state.scanBatch) imageBodyEl.appendChild(renderImageCell(item, index));
       sourceBodyEl.appendChild(renderSourceCell(item, index));
@@ -772,11 +775,8 @@
       renderImageCell: renderImageCell,
       renderQuestionBlock: renderQuestionBlock,
       renderSourceCell: renderSourceCell,
-      renderTimer: renderTimer,
       restoreFocus: restoreFocus,
       scheduleRender: scheduleRender,
-      scrollLock: scrollLock,
-      scrollRestore: scrollRestore,
       syncActiveBits: syncActiveBits,
       syncScroll: syncScroll,
       updateStatusbar: updateStatusbar,

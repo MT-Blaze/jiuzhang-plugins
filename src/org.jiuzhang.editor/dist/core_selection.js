@@ -279,8 +279,6 @@
       restoreWorklist: restoreWorklist,
       saveWorklist: saveWorklist,
       selectionPayload: selectionPayload,
-      selectionTimer: selectionTimer,
-      worklistTimer: worklistTimer,
       worklistValue: worklistValue,
     };
   }
