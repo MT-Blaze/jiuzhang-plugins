@@ -80,21 +80,30 @@
     });
   }
 
-  /** registry 单源：只有就绪条目进下拉；残留的未就绪值当场归一回 auto（原因由宿主闸口进批次 note）。 */
-  function applyRegistry(entries) {
+  /** registry 单源：就绪且启用的条目才进下拉（停用＝不显示＋自动跳过，不卸载）；
+   * 默认选择（插件目录 model_prefs.toml）只在新批次状态为空时注入初值；
+   * 残留的未就绪值当场归一回 auto（原因由宿主闸口进批次 note）。 */
+  function applyRegistry(entries, defaults) {
     layoutAllowed = ["auto"];
     recognizeAllowed = ["auto"];
     engineNames = { auto: "自动" };
     engineTitles = {};
     (entries || []).forEach(function (entry) {
       var id = String((entry && entry.id) || "");
-      if (!id || id === "auto" || entry.state !== "ready") return;
+      if (!id || id === "auto" || entry.state !== "ready" || entry.enabled === false) return;
       var capability = String(entry.capability || "");
       engineNames[id] = String(entry.name || id);
       engineTitles[id] = String(entry.summary || "");
       if (capability === "layout" || capability === "both") layoutAllowed.push(id);
       if (capability === "recognize" || capability === "both") recognizeAllowed.push(id);
     });
+    var defs = defaults || {};
+    if (!state.ingestLayoutEngine && layoutAllowed.indexOf(String(defs.layout || "")) > 0) {
+      state.ingestLayoutEngine = String(defs.layout);
+    }
+    if (!state.ingestRecognizeEngine && recognizeAllowed.indexOf(String(defs.recognize || "")) > 0) {
+      state.ingestRecognizeEngine = String(defs.recognize);
+    }
     if (layoutAllowed.indexOf(String(state.ingestLayoutEngine || "")) < 0) {
       state.ingestLayoutEngine = "auto";
     }

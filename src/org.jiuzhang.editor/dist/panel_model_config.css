@@ -71,3 +71,97 @@
   font-size: 12.5px;
   color: var(--ink-soft);
 }
+
+/* 四合一增量（随本文件整块下架）：硬件快照＋档位表＋默认选择＋使用说明＋停用态。 */
+
+.ep-model-config-hw {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--paper-soft, transparent);
+}
+
+.ep-model-config-hw-line {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ep-model-config-hw-detail,
+.ep-model-config-hw-note {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--ink-soft);
+}
+
+.ep-model-config-tiers {
+  width: 100%;
+  margin-top: 8px;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ep-model-config-tiers th,
+.ep-model-config-tiers td {
+  padding: 3px 6px;
+  border-top: 1px solid var(--line);
+  text-align: left;
+  color: var(--ink-soft);
+}
+
+.ep-model-config-tiers th {
+  border-top: none;
+  color: var(--ink, inherit);
+}
+
+.ep-model-config-defaults {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+}
+
+.ep-model-config-defaults-label {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.ep-model-config-default-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+}
+
+.ep-model-config-default-select {
+  font-size: 12.5px;
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper, #fff);
+  color: inherit;
+}
+
+.ep-model-config-usage {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.ep-model-config-toggle {
+  flex: none;
+}
+
+.ep-model-config-disabled {
+  opacity: 0.55;
+}
+
+.ep-model-config-disabled .ep-model-config-state {
+  background: var(--line);
+  color: var(--ink-soft);
+}
