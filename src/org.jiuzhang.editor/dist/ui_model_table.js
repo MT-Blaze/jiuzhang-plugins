@@ -54,7 +54,8 @@
           String(entry.store || "") === "formula_p2t"));
       if (action === "install" || action === "install_vlm" || action === "install_ocr" ||
           action === "install_formula" || action === "install_formula_l" ||
-          action === "install_formula_p2t") {
+          action === "install_formula_p2t" || action === "install_vlm_intern" ||
+          action === "install_vlm_minicpm") {
         var installBtn = el("button", "ep-btn ep-mini-btn ep-mt-act",
           state === "blocked" ? "重试安装" : "安装");
         installBtn.type = "button";
@@ -64,7 +65,7 @@
       } else if (local && state === "ready") {
         var uninstallBtn = el("button", "ep-btn ep-mini-btn ep-mt-act ep-mt-danger", "卸载");
         uninstallBtn.type = "button";
-        uninstallBtn.title = "先停服务再删整个隔离目录（含权重），弹确认后才动手";
+        uninstallBtn.title = "弹确认后才动手：VLM/公式按件删本座权重，MinerU/OCR 删整个隔离目录";
         uninstallBtn.addEventListener("click", function () { actions.uninstall(entry, uninstallBtn); });
         cell.appendChild(uninstallBtn);
       } else if (action === "download") {

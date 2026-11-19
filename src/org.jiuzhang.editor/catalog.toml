@@ -6,7 +6,7 @@
 #   weight_present：store=权重档，model_store 在＝ready、不在＝degraded＋degraded_action；
 #   task_assign：task=AI 中心任务键，指派在＝ready、不在＝degraded＋degraded_action；
 #   mineru_local：隔离环境体检三态（install 动作照旧）；
-#   vlm_local：本地 VLM 隔离环境体检＋显存门组合（T6；install_vlm 动作）；
+#   vlm_local：本地 VLM 隔离环境体检＋显存门组合（T6 多座：千问/书生/面壁；install_vlm[_座] 动作）；
 #   vram_gate：min_vram＋硬件探针，低于门槛直写不支持引导云；够格也只登记待接线；
 #   blocked：detail 全由本文件给。
 # 人话模板占位符由底座填：{name}/{model}（指派）、{version}/{message}（体检）、
@@ -15,7 +15,7 @@
 # aliases_layout/aliases_recognize＝老插件旧引擎名兼容映射；
 # route_note_layout/route_note_recognize＝批次路由里「只走谁」的人话计划说明。
 # min_vram＝本地运行最低显存（G，0＝不吃显卡）；can_cpu＝能否纯 CPU 跑。
-# family：vlm＝本地视觉大模型（硬件门；Qwen 座 T6 已接推理，其余座待接线）；formula＝公式专科（安装/推理/擂台同在 D 卡）。
+# family：vlm＝本地视觉大模型（硬件门；千问/书生/面壁三座均已接推理，共享发动机单活座）；formula＝公式专科（安装/推理/擂台同在 D 卡）。
 # gate_note：条目已就绪但调度尚未接线时，闸口回 auto 并照念这句（接线后删掉本行即放行）。
 # [auto] 段＝自动分流默认座（T6）：纯图卷走 image_seat 整题直转；文字卷文字直取正文＋公式裁图送 text_formula_seat。
 # 老师在模型配置「自动分流默认」区可改（prefs 键 auto_image_seat/auto_text_formula_seat，选「自动」＝沿用本段）。
@@ -148,33 +148,39 @@ route_note_recognize = "识别：只交本地千问 VLM，本地切好单题截�
 
 [[entry]]
 id = "vlm_intern"
-name = "书生 InternVL（本地）"
+name = "书生 InternVL3-2B（本地）"
 capability = "recognize"
 family = "vlm"
 min_vram = 6
-can_cpu = false
-summary = "本地视觉大模型主力之一：中文卷面理解强；推理通道未接线。"
-summary_usage = "干啥：本地视觉大模型读题写 LaTeX，中文卷面理解强，主力前三之一。准不准：看参数量与量化档。快慢：看显卡。吃不吃卡：吃，最低 6G 显存，档位见上方显存表。免不免费：权重免费；本座推理通道尚未接线（T6 只开了千问座），先别选它。"
-rule = "vram_gate"
-low_detail = "电脑硬件不支持：本机显存 {vram_label}，本地 VLM 最低 {min_vram}G 起。请用云端视觉或 MinerU 兜底。"
-low_action = "assign"
-ok_detail = "本机显存 {vram_label}，可跑 {fits}；本座推理通道尚未接线（T6 只开了千问 Qwen2.5-VL 座），先别选它。"
-ok_action = ""
+can_cpu = true
+summary = "本地视觉大模型主力之一：中文卷面理解强；已接一键装与逐题推理，与千问座共享发动机、单活座切换。"
+brief = "本地 VLM·书生 2B：免费、卷子不出本机。要 {min_vram}G 以上显存；你这台 {vram_label} → {vram_verdict}。"
+summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），中文卷面理解强，试卷不出本机，也能接公式裁图重认。准不准：2B 参数 int4 量化（Q4_K_M），日常印刷卷够用，复杂公式不如大档。快慢：2B 小档比千问 3B 更轻，显存够格走显卡加速；CPU 兜底明显更慢（慢一个数量级），首载模型更慢。吃不吃卡：吃，6G 显存起步走显卡；低于 6G 仍可安装，但只能 CPU 慢兜底，也可改云端视觉或 MinerU。免不免费：免费（Apache-2.0），权重约 1.74GB（Q4_K_M 约 1.12GB＋视觉投影 mmproj 约 0.63GB）从国内镜像点击预取；发动机与千问座共享 engines/vlm/，不碰底座、不装 torch。现状：推理通道已接线，选中后解析作业自动起本地服务；同一时刻只跑一座，切座先停旧座，失败显性列清单、不偷换引擎。"
+rule = "vlm_local"
+ready_detail = "已安装（llama-cpp {version}），书生座权重就绪且显存 {vram_label} 够 {min_vram}G 门槛；逐题本地推理已接线，试卷不出本机。"
+missing_detail = "未安装。点【安装】一键补齐书生座 GGUF 权重（国内镜像，约 1.74GB）；发动机与千问座共享，已装过则只下权重。"
+broken_detail = "{message}"
+install_error_detail = "安装失败：{message}"
+plan_recognize = ["vlm_local"]
+route_note_recognize = "识别：只交本地书生 VLM，本地切好单题截图后逐题交本机服务推理，失败不降级。"
 
 [[entry]]
 id = "vlm_minicpm"
-name = "面壁 MiniCPM-V（本地）"
+name = "面壁 MiniCPM-V-2.6（本地）"
 capability = "recognize"
 family = "vlm"
 min_vram = 6
-can_cpu = false
-summary = "本地视觉大模型主力之一：小显存友好，6G 档可跑 MiniCPM-V-2.6；推理通道未接线。"
-summary_usage = "干啥：本地视觉大模型读题写 LaTeX，小显存友好，6G 档可跑 MiniCPM-V-2.6，主力前三之一。准不准：小模型日常卷够用，复杂公式不如大档。快慢：小模型快。吃不吃卡：吃，最低 6G 显存。免不免费：权重免费；本座推理通道尚未接线（T6 只开了千问座），先别选它。"
-rule = "vram_gate"
-low_detail = "电脑硬件不支持：本机显存 {vram_label}，本地 VLM 最低 {min_vram}G 起。请用云端视觉或 MinerU 兜底。"
-low_action = "assign"
-ok_detail = "本机显存 {vram_label}，可跑 {fits}；本座推理通道尚未接线（T6 只开了千问 Qwen2.5-VL 座），先别选它。"
-ok_action = ""
+can_cpu = true
+summary = "本地视觉大模型主力之一：小显存友好，6G 档可跑 Q3_K_M；已接一键装与逐题推理，与千问座共享发动机、单活座切换。"
+brief = "本地 VLM·面壁 8B·Q3：权重免费（商用须遵官方许可）、卷子不出本机。要 {min_vram}G 以上显存；你这台 {vram_label} → {vram_verdict}。"
+summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），小显存友好，试卷不出本机，也能接公式裁图重认。准不准：8B 参数 Q3_K_M 量化，日常卷面理解好于 2B/3B 小档，极复杂公式仍不如云端大模型。快慢：显存够格走显卡加速；Q3_K_M 约 5.7G 显存占用，6G 卡稳进；CPU 兜底明显更慢（慢一个数量级），首载模型更慢。吃不吃卡：吃，6G 显存起步走显卡；低于 6G 仍可安装，但只能 CPU 慢兜底，也可改云端视觉或 MinerU。免不免费：权重免费下载（约 4.85GB：Q3_K_M 约 3.81GB＋视觉投影 mmproj 约 1.04GB，国内镜像点击预取），许可为 MiniCPM Model License——个人/学术研究免费，商用须遵守官方许可条款（按要求登记）；发动机与千问座共享 engines/vlm/，不碰底座、不装 torch。现状：推理通道已接线，选中后解析作业自动起本地服务；同一时刻只跑一座，切座先停旧座，失败显性列清单、不偷换引擎。"
+rule = "vlm_local"
+ready_detail = "已安装（llama-cpp {version}），面壁座权重就绪且显存 {vram_label} 够 {min_vram}G 门槛；逐题本地推理已接线，试卷不出本机。"
+missing_detail = "未安装。点【安装】一键补齐面壁座 GGUF 权重（国内镜像，约 4.85GB）；发动机与千问座共享，已装过则只下权重。商用前请阅读 MiniCPM Model License 官方条款。"
+broken_detail = "{message}"
+install_error_detail = "安装失败：{message}"
+plan_recognize = ["vlm_local"]
+route_note_recognize = "识别：只交本地面壁 VLM，本地切好单题截图后逐题交本机服务推理，失败不降级。"
 
 [[entry]]
 id = "combo_cloud"
