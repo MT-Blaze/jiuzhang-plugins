@@ -16,7 +16,7 @@
     var say = deps.say;
     var hardware = deps.hardware;
     var refreshed = deps.refreshed;
-    var timers = { mineru: null, vlm: null };
+    var timers = { mineru: null, vlm: null, ocr: null };
 
     function failText(error) {
       return (error && error.message) || "未知原因";
@@ -27,8 +27,24 @@
         String(entry.action || "") === "install_vlm";
     }
 
+    function isOcr(entry) {
+      return String(entry.store || "") === "ocr_medium" ||
+        String(entry.action || "") === "install_ocr";
+    }
+
+    function kindOf(entry) {
+      return isVlm(entry) ? "vlm" : (isOcr(entry) ? "ocr" : "mineru");
+    }
+
+    var KIND_NAMES = { vlm: "本地 VLM", mineru: "本地 MinerU", ocr: "RapidOCR·准" };
+
     function installConfirmText(entry) {
-      if (!isVlm(entry)) {
+      var kind = kindOf(entry);
+      if (kind === "ocr") {
+        return "安装 RapidOCR·准要下约 139MB 权重（det 62MB＋rec 77MB，国内镜像）占磁盘。" +
+          "切题默认仍是快档，装好后在下拉里选准档才生效。仍要安装？";
+      }
+      if (kind === "mineru") {
         return "安装本地 MinerU 要下依赖约 1–2GB＋解析模型约 1–3GB（国内镜像）占磁盘。仍要安装？";
       }
       var need = Number(entry.min_vram || 6);
@@ -87,11 +103,10 @@
 
     function install(entry, button) {
       if (!window.confirm(installConfirmText(entry))) return;
-      var vlm = isVlm(entry);
-      var kind = vlm ? "vlm" : "mineru";
-      var name = vlm ? "本地 VLM" : "本地 MinerU";
+      var kind = kindOf(entry);
+      var name = KIND_NAMES[kind];
       busy(button, "安装中…");
-      say("正在发起" + name + "一键安装（隔离环境、国内镜像测速选路）…");
+      say("正在发起" + name + "一键安装（国内镜像测速选路）…");
       hostCall("models." + kind + "_install", {}, 20000).then(function () {
         watch(kind, name);
       }, function (error) {
@@ -103,13 +118,14 @@
 
     function uninstall(entry, button) {
       var name = String(entry.name || entry.id || "");
-      var folder = isVlm(entry) ? "engines/vlm/" : "engines/mineru/";
-      if (!window.confirm("确认卸载「" + name + "」？将先停服务再删除 " + folder +
+      var kind = kindOf(entry);
+      var folders = { vlm: "engines/vlm/", mineru: "engines/mineru/", ocr: "engines/ocr/" };
+      var lead = kind === "ocr" ? "将丢弃引擎缓存并删除 " : "将先停服务再删除 ";
+      if (!window.confirm("确认卸载「" + name + "」？" + lead + folders[kind] +
           " 整个目录（含已下权重），下次使用要重新安装。已入库题目不受影响。")) return;
       busy(button, "卸载中…");
-      say("正在卸载" + name + "（先停服务再删目录）…");
-      hostCall(isVlm(entry) ? "models.uninstall_vlm" : "models.uninstall_mineru",
-        {}, 60000).then(function (result) {
+      say("正在卸载" + name + "…");
+      hostCall("models.uninstall_" + kind, {}, 60000).then(function (result) {
         say(String((result && result.message) || (name + " 已卸载。")));
         refreshed();
       }, function (error) {

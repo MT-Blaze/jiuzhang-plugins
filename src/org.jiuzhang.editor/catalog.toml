@@ -21,7 +21,7 @@
 # 老师在模型配置「自动分流默认」区可改（prefs 键 auto_image_seat/auto_text_formula_seat，选「自动」＝沿用本段）。
 # 默认哪条由 D 擂台实测后改本段即上架；默认座未就绪＝显性失败引导，绝不静默换座。
 
-vram_note = "int4 显存为估算、标「约」，以实测加载为准；4G 档不开，低于 6G 请用云端视觉或 MinerU。"
+vram_note = "int4 显存为估算、标「约」，以实测加载为准；4G 档不开，低于 6G 仍可安装但只能 CPU 慢兜底，或改云端视觉/MinerU。"
 
 [auto]
 image_seat = "mineru_local"
@@ -33,7 +33,7 @@ name = "RapidOCR·快"
 capability = "layout"
 min_vram = 0
 can_cpu = true
-summary = "本地轻量 OCR 切题，随底座安装，图片型卷的切题主路。"
+summary = "本地轻量 OCR 切题（small 档），随底座安装，图片型卷的切题主路。"
 summary_usage = "干啥：把图片卷里的题目区域框出来。准不准：印刷体日常卷够用，手写与复杂公式要人工核对。快慢：快，普通电脑几秒一页。吃不吃卡：不吃，CPU 就能跑。免不免费：免费，随底座自带。"
 rule = "import_probe"
 probe = "rapidocr"
@@ -49,10 +49,16 @@ name = "RapidOCR·准"
 capability = "layout"
 min_vram = 0
 can_cpu = true
-summary = "更高精度的 OCR 档，模型未核实、暂不开下载。"
-summary_usage = "干啥：更高精度的 OCR 切题档。现状：模型还没核实，暂不开下载，先别选它。"
-rule = "blocked"
-detail = "模型未核实、暂不开下载。"
+summary = "更高精度的 OCR 切题档（medium 权重），点【安装】从国内镜像按需下载。"
+summary_usage = "干啥：更高精度的 OCR 切题档，与快档同源 RapidOCR，换更大的 medium 检测/识别模型。准不准：官方 PP-OCRv6 medium 档，口碑比 small 更稳（出处：RapidOCR 官方模型表），本机待实测。快慢：参数量比快档大，估排更慢，CPU 仍是小模型秒级一路。吃不吃卡：不吃，CPU 就能跑。免不免费：免费，权重约 139MB（det 62MB＋rec 77MB）从国内镜像点击安装，落 engines/ocr/ 不碰底座。现状：默认仍是快档，准档要不要升默认等对照实测后另拍板。"
+rule = "weight_present"
+store = "ocr_medium"
+ready_detail = "medium 权重已落地本机（det/rec 校验通过），本地高精度切题可用。"
+degraded_detail = "medium 权重未下载，点【安装】从国内镜像按需获取（约 139MB）。"
+degraded_action = "install_ocr"
+install_error_detail = "安装失败：{message}"
+plan_layout = ["ocr_medium"]
+route_note_layout = "版面：只跑本地 RapidOCR·准（medium）切题，失败不降级其他引擎。"
 
 [[entry]]
 id = "yolo"
@@ -128,17 +134,15 @@ name = "千问 Qwen2.5-VL（本地）"
 capability = "recognize"
 family = "vlm"
 min_vram = 6
-can_cpu = false
+can_cpu = true
 summary = "本地视觉大模型主力之一：读题写 LaTeX，试卷不出本机；T6 已接一键装与逐题推理。"
 brief = "本地 VLM·千问 3B：免费、卷子不出本机。要 {min_vram}G 以上显存；你这台 {vram_label} → {vram_verdict}。"
-summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），试卷不出本机，也能接公式裁图重认。准不准：3B 参数 int4 量化（Q4_K_M），日常印刷卷够用，复杂公式不如大档。快慢：免费里偏慢，吃显卡；显存够格时单题分钟级，首载模型更慢。吃不吃卡：吃，最低 6G 显存起步，低于 6G 直写不支持、请用云端视觉或 MinerU 兜底。免不免费：免费，权重约 3.2GB（Q4_K_M 约 1.9GB＋视觉投影 mmproj 约 1.3GB）从国内镜像点击预取，装进 engines/vlm/ 独立环境不碰底座、不装 torch。现状：推理通道 T6 已接线，选中后解析作业自动起本地服务，失败显性列清单、不偷换引擎。"
+summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），试卷不出本机，也能接公式裁图重认。准不准：3B 参数 int4 量化（Q4_K_M），日常印刷卷够用，复杂公式不如大档。快慢：3B 小档，显存够格走显卡加速；CPU 兜底明显更慢（慢一个数量级），首载模型更慢。吃不吃卡：吃，6G 显存起步走显卡；低于 6G 仍可安装，但只能 CPU 慢兜底，也可改云端视觉或 MinerU。免不免费：免费，权重约 3.2GB（Q4_K_M 约 1.9GB＋视觉投影 mmproj 约 1.3GB）从国内镜像点击预取，装进 engines/vlm/ 独立环境不碰底座、不装 torch。现状：推理通道 T6 已接线，选中后解析作业自动起本地服务，失败显性列清单、不偷换引擎。"
 rule = "vlm_local"
 ready_detail = "已安装（llama-cpp {version}），权重就绪且显存 {vram_label} 够 {min_vram}G 门槛；逐题本地推理已接线，试卷不出本机。"
 missing_detail = "未安装。点【安装本地 VLM】一键装进 engines/vlm/ 隔离环境并预取 GGUF 权重（国内镜像，约 3.2GB）。"
 broken_detail = "{message}"
 install_error_detail = "安装失败：{message}"
-low_detail = "电脑硬件不支持：本机显存 {vram_label}，本地 VLM 最低 {min_vram}G 起。请用云端视觉或 MinerU 兜底。"
-low_action = "assign"
 plan_recognize = ["vlm_local"]
 route_note_recognize = "识别：只交本地千问 VLM，本地切好单题截图后逐题交本机服务推理，失败不降级。"
 
@@ -173,51 +177,6 @@ ok_detail = "本机显存 {vram_label}，可跑 {fits}；本座推理通道尚�
 ok_action = ""
 
 [[entry]]
-id = "vlm_smolvlm"
-name = "SmolVLM（本地）"
-capability = "recognize"
-family = "vlm"
-min_vram = 6
-can_cpu = false
-summary = "轻量本地视觉模型：门槛低、速度快；推理通道未接线。"
-summary_usage = "干啥：轻量本地视觉模型读题。准不准：日常印刷卷够用，复杂版面偏弱。快慢：快。吃不吃卡：吃，最低 6G 显存。免不免费：权重免费；本座推理通道尚未接线（T6 只开了千问座），先别选它。"
-rule = "vram_gate"
-low_detail = "电脑硬件不支持：本机显存 {vram_label}，本地 VLM 最低 {min_vram}G 起。请用云端视觉或 MinerU 兜底。"
-low_action = "assign"
-ok_detail = "本机显存 {vram_label}，可跑 {fits}；本座推理通道尚未接线（T6 只开了千问 Qwen2.5-VL 座），先别选它。"
-ok_action = ""
-
-[[entry]]
-id = "vlm_phi"
-name = "Phi 视觉（本地）"
-capability = "recognize"
-family = "vlm"
-min_vram = 6
-can_cpu = false
-summary = "微软小参数视觉模型：推理见长；推理通道未接线。"
-summary_usage = "干啥：微软小参数视觉模型读题，数学推理见长。准不准：小档里推理较强，中文卷面需实测。快慢：较快。吃不吃卡：吃，最低 6G 显存。免不免费：权重免费；本座推理通道尚未接线（T6 只开了千问座），先别选它。"
-rule = "vram_gate"
-low_detail = "电脑硬件不支持：本机显存 {vram_label}，本地 VLM 最低 {min_vram}G 起。请用云端视觉或 MinerU 兜底。"
-low_action = "assign"
-ok_detail = "本机显存 {vram_label}，可跑 {fits}；本座推理通道尚未接线（T6 只开了千问 Qwen2.5-VL 座），先别选它。"
-ok_action = ""
-
-[[entry]]
-id = "vlm_gemma"
-name = "Gemma 视觉（本地）"
-capability = "recognize"
-family = "vlm"
-min_vram = 6
-can_cpu = false
-summary = "谷歌开放权重视觉模型：多语言；推理通道未接线。"
-summary_usage = "干啥：谷歌开放权重视觉模型读题，多语言。准不准：看参数量与量化档，中文数学卷需实测。快慢：看显卡。吃不吃卡：吃，最低 6G 显存。免不免费：权重免费；本座推理通道尚未接线（T6 只开了千问座），先别选它。"
-rule = "vram_gate"
-low_detail = "电脑硬件不支持：本机显存 {vram_label}，本地 VLM 最低 {min_vram}G 起。请用云端视觉或 MinerU 兜底。"
-low_action = "assign"
-ok_detail = "本机显存 {vram_label}，可跑 {fits}；本座推理通道尚未接线（T6 只开了千问 Qwen2.5-VL 座），先别选它。"
-ok_action = ""
-
-[[entry]]
 id = "formula_pp_m"
 name = "PP-FormulaNet·M（公式专科）"
 capability = "formula"
@@ -243,12 +202,12 @@ detail = "专科推理通道下一卡开（D 卡：安装＋推理＋擂台同�
 
 [[entry]]
 id = "formula_p2t"
-name = "pix2tex·MFR（公式专科）"
+name = "Pix2Text·MFR（公式专科）"
 capability = "formula"
 family = "formula"
 min_vram = 0
 can_cpu = true
-summary = "pix2tex 公式转 LaTeX：社区常用；安装/推理/擂台同在 D 卡。"
+summary = "Pix2Text 公式转 LaTeX：社区常用；安装/推理/擂台同在 D 卡。"
 summary_usage = "干啥：公式专科，把公式图转 LaTeX。准不准：社区常用，印刷公式稳，手写一般。快慢：较快。吃不吃卡：CPU 可跑。免不免费：免费开源；安装/推理/擂台同在 D 卡，本卡只登记。"
 rule = "blocked"
 detail = "专科推理通道下一卡开（D 卡：安装＋推理＋擂台同在），本卡只登记说明；重认席可见，选中会如实提示。"
