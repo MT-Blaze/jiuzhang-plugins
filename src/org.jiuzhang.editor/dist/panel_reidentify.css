@@ -65,6 +65,7 @@
 .ed-reidentify-seat-name {
   min-width: 0;
   overflow-wrap: anywhere;
+  white-space: normal; /* 压住 ep-mini-btn 的 nowrap：长席名窄屏要换行，不横向溢出 */
 }
 
 .ed-reidentify-state {
