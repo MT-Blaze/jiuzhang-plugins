@@ -216,15 +216,15 @@ name = "文字直取＋公式·PP-FormulaNet·M（组合路）"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
-summary = "文字卷组合路：正文文字直取，公式裁图送 PP-FormulaNet·M；专科通道 D 卡开，公式先标待核。"
-summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 PP-FormulaNet·M。准不准：正文零误差；专科模型复杂公式比通用 OCR 稳。快慢：正文即取，公式小模型快。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源。现状：专科推理通道 D 卡才开，现在选它正文照取、公式如实标待核（不偷换不静默）；纯图卷选它会显性报错。"
+summary = "文字卷组合路：正文文字直取，公式裁图送 PP-FormulaNet·M 专科（已接线）。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 PP-FormulaNet·M。准不准：正文零误差；专科模型复杂公式比通用 OCR 稳。快慢：正文即取，公式小模型快。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源。现状：公式专科通道已接线，PP-M 权重未装时公式如实标待核（不偷换不静默）；纯图卷选它会显性报错。"
 rule = "import_probe"
 probe = "app.core.ingest.recognize.formula"
-ready_detail = "组合路就绪：正文文字直取；公式座 PP-FormulaNet·M 专科通道未接线（D 卡），公式先标待核、正文不动。"
+ready_detail = "组合路就绪：正文文字直取；公式裁图交 PP-FormulaNet·M 专科通道（权重未装时公式标待核、正文不动）。"
 degraded_detail = "底座缺组合路实现模块，请更新底座后再用。"
 plan_recognize = ["combo"]
 combo_seat = "formula_pp_m"
-route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 PP-FormulaNet·M（专科通道 D 卡开，先标待核）。"
+route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 PP-FormulaNet·M 专科。"
 
 [[entry]]
 id = "formula_pp_m"
@@ -250,10 +250,15 @@ capability = "formula"
 family = "formula"
 min_vram = 0
 can_cpu = true
-summary = "Paddle 公式识别服务器档：更准更重；安装/推理/擂台同在 D 卡。"
-summary_usage = "干啥：公式专科大档，只把公式图转 LaTeX。准不准：比移动档更准，复杂公式更稳。快慢：比移动档慢。吃不吃卡：CPU 可跑，有卡更快。免不免费：免费开源；安装/推理/擂台同在 D 卡，本卡只登记。"
-rule = "blocked"
-detail = "专科推理通道下一卡开（D 卡：安装＋推理＋擂台同在），本卡只登记说明；重认席可见，选中会如实提示。"
+summary = "Paddle 公式识别服务器档：比移动档更准更重更慢；权重一键装（约 737MB），CPU 可跑。"
+summary_usage = "干啥：公式专科大档，只把公式图转 LaTeX。准不准：比移动档 PP-M 更准，复杂公式更稳。快慢：比移动档慢，CPU 一块数秒。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源（Apache-2.0）；权重约 737MB 一键装。"
+rule = "weight_present"
+store = "formula_l"
+plan_recognize = ["formula_pp_l"]
+ready_detail = "权重已装（onnx＋yml 两件 sha256 校验通过），公式专科 L 通道就绪。"
+degraded_detail = "权重未安装（约 737MB，国内镜像），点【安装】一键下；装好公式专科 L 档生效。"
+degraded_action = "install_formula_l"
+install_error_detail = "安装失败：{message}"
 
 [[entry]]
 id = "formula_p2t"
