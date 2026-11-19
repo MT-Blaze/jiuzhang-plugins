@@ -16,7 +16,8 @@
     var say = deps.say;
     var hardware = deps.hardware;
     var refreshed = deps.refreshed;
-    var timers = { mineru: null, vlm: null, ocr: null, formula: null, formula_l: null };
+    var timers = { mineru: null, vlm: null, ocr: null, formula: null, formula_l: null,
+      formula_p2t: null };
 
     function failText(error) {
       return (error && error.message) || "未知原因";
@@ -42,13 +43,19 @@
         String(entry.action || "") === "install_formula_l";
     }
 
+    function isFormulaP2t(entry) {
+      return String(entry.store || "") === "formula_p2t" ||
+        String(entry.action || "") === "install_formula_p2t";
+    }
+
     function kindOf(entry) {
       return isVlm(entry) ? "vlm" : (isOcr(entry) ? "ocr" :
-        (isFormulaL(entry) ? "formula_l" : (isFormula(entry) ? "formula" : "mineru")));
+        (isFormulaP2t(entry) ? "formula_p2t" :
+          (isFormulaL(entry) ? "formula_l" : (isFormula(entry) ? "formula" : "mineru"))));
     }
 
     var KIND_NAMES = { vlm: "本地 VLM", mineru: "本地 MinerU", ocr: "RapidOCR·准",
-      formula: "PP-FormulaNet·M", formula_l: "PP-FormulaNet·L" };
+      formula: "PP-FormulaNet·M", formula_l: "PP-FormulaNet·L", formula_p2t: "Pix2Text·MFR" };
 
     function installConfirmText(entry) {
       var kind = kindOf(entry);
@@ -59,6 +66,10 @@
       if (kind === "formula_l") {
         return "安装 PP-FormulaNet·L 要下约 737MB 权重（模型 735MB＋配置 2.2MB，国内镜像）占磁盘。" +
           "装好后公式专科 L 档生效（大模型更准但更慢）。仍要安装？";
+      }
+      if (kind === "formula_p2t") {
+        return "安装 Pix2Text·MFR 要下约 118MB 权重（编码器 87MB＋解码器 30MB＋词表 39KB，国内镜像）占磁盘。" +
+          "装好后公式专科 p2t 档生效。仍要安装？";
       }
       if (kind === "ocr") {
         return "安装 RapidOCR·准要下约 139MB 权重（det 62MB＋rec 77MB，国内镜像）占磁盘。" +
@@ -140,8 +151,9 @@
       var name = String(entry.name || entry.id || "");
       var kind = kindOf(entry);
       var folders = { vlm: "engines/vlm/", mineru: "engines/mineru/", ocr: "engines/ocr/" };
-      var shared = kind === "formula" || kind === "formula_l";
-      var scope = shared ? "engines/formula/models/ 里本档两件权重（其他公式档不受影响）" :
+      var pieces = { formula: "两件", formula_l: "两件", formula_p2t: "三件" };
+      var shared = kind in pieces;
+      var scope = shared ? "engines/formula/models/ 里本档" + pieces[kind] + "权重（其他公式档不受影响）" :
         folders[kind] + " 整个目录（含已下权重）";
       var lead = (kind === "ocr" || shared) ? "将丢弃引擎缓存并删除 " : "将先停服务再删除 ";
       if (!window.confirm("确认卸载「" + name + "」？" + lead + scope +

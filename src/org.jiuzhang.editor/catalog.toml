@@ -267,10 +267,15 @@ capability = "formula"
 family = "formula"
 min_vram = 0
 can_cpu = true
-summary = "Pix2Text 公式转 LaTeX：社区常用；安装/推理/擂台同在 D 卡。"
-summary_usage = "干啥：公式专科，把公式图转 LaTeX。准不准：社区常用，印刷公式稳，手写一般。快慢：较快。吃不吃卡：CPU 可跑。免不免费：免费开源；安装/推理/擂台同在 D 卡，本卡只登记。"
-rule = "blocked"
-detail = "专科推理通道下一卡开（D 卡：安装＋推理＋擂台同在），本卡只登记说明；重认席可见，选中会如实提示。"
+summary = "Pix2Text 公式转 LaTeX：社区常用，官方 ONNX 零新依赖；权重一键装（约 118MB），CPU 秒级。"
+summary_usage = "干啥：公式专科，把公式图转 LaTeX。准不准：社区常用，印刷公式稳，手写一般。快慢：快，CPU 一块约 1 秒。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源（Apache-2.0）；权重约 118MB 一键装（编码器＋解码器＋词表三件）。"
+rule = "weight_present"
+store = "formula_p2t"
+plan_recognize = ["formula_p2t"]
+ready_detail = "权重已装（encoder/decoder/tokenizer 三件 sha256 校验通过），公式专科 p2t 通道就绪。"
+degraded_detail = "权重未安装（约 118MB，国内镜像），点【安装】一键下；装好公式专科 p2t 档生效。"
+degraded_action = "install_formula_p2t"
+install_error_detail = "安装失败：{message}"
 
 [[entry]]
 id = "formula_texify"
@@ -279,10 +284,10 @@ capability = "formula"
 family = "formula"
 min_vram = 0
 can_cpu = true
-summary = "Texify 公式转 LaTeX：MinerU 同源生态；安装/推理/擂台同在 D 卡。"
-summary_usage = "干啥：公式专科，把公式图转 LaTeX。准不准：印刷公式稳，与 MinerU 生态同源。快慢：较快。吃不吃卡：CPU 可跑，有卡更快。免不免费：免费开源；安装/推理/擂台同在 D 卡，本卡只登记。"
+summary = "Texify 公式转 LaTeX：MinerU 同源生态；官方只发 torch 权重无 ONNX，底座零 torch 铁律下登记跳过。"
+summary_usage = "干啥：公式专科，把公式图转 LaTeX。准不准：印刷公式稳，与 MinerU 生态同源。快慢：较快。吃不吃卡：CPU 可跑，有卡更快。免不免费：免费开源。现状：官方仓只发 safetensors（torch 权重，约 625MB），没有 ONNX 出口；底座不装 torch（零新依赖铁律），本座登记跳过——官方出 ONNX 或另卡拍板隔离 torch 环境时可后补。"
 rule = "blocked"
-detail = "专科推理通道下一卡开（D 卡：安装＋推理＋擂台同在），本卡只登记说明；重认席可见，选中会如实提示。"
+detail = "登记跳过：官方只发 torch 权重（safetensors）无 ONNX，底座零 torch 铁律不装；官方出 ONNX 或另卡拍板隔离环境时可后补。重认席可见，选中会如实提示。"
 
 # 本地 VLM 显存档位表（int4 估，标「约」，实测加载为准）：4G 档不建，6G 起。
 [[vram_tier]]
