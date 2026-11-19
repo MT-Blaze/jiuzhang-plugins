@@ -11,6 +11,7 @@ filename = "doclayout_yolo_full_v1.0.onnx"
 display_size = "约 75MB"
 size_bytes = 75324598
 min_bytes = 70000000
+sha256 = "fece9af02f618b603ff7921ccec6861d13e7e1f9830e091dfb7e8ad9311e5b21"
 license = "Apache-2.0"
 urls = ["https://gh-proxy.com/https://github.com/MT-Blaze/jiuzhang-models/releases/download/v1.0/doclayout_yolo_full_v1.0.onnx", "https://gitee.com/jiuzhang-operator/jiuzhang-models/releases/download/v1.0/doclayout_yolo_full_v1.0.onnx", "https://hf-mirror.com/wybxc/DocLayout-YOLO-DocStructBench-onnx/resolve/main/doclayout_yolo_docstructbench_imgsz1024.onnx"]
 
