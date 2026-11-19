@@ -1,18 +1,18 @@
 /**
- * ui_model_config.js —— 模型配置页（可整块下架）。
+ * ui_model_config.js —— 模型配置页编排器（2.20.0 卡§1 重做，可整块下架）。
  *
  * 清单单源宿主 registry（models.registry_status）：目录全量 × 三态＋硬件快照＋显存档位表。
- * 本页：逐条大白话使用说明；【启用/停用】与默认选择经 models.prefs_save 代笔进
- * 插件目录 model_prefs.toml（插件财产，carried 语义，不落宿主 data/）；
- * MinerU【安装本地 MinerU】经 models.mineru_install 一键装进隔离环境，进度轮询
- * models.mineru_status；本地 VLM【安装本地 VLM】经 models.vlm_install/vlm_status
- * 同一套动线（T6）；「自动分流默认」两下拉经 models.prefs_save 存
- * auto_image_seat/auto_text_formula_seat；YOLO【下载】复用 ui_model.js 通道；云端【去 API 配置指派】。
- * 停用＝下拉不显示＋自动跳过，不卸载；只有就绪且启用的条目进下拉（applyEngines）。
- * 2026-11-19 起本页是画布内联视图（不做弹窗）：开合走 openView/closeView 整屏切换，
- * 批次列表期间隐藏、返回原样恢复；数据驱动渲染一行不改。
- * 整块下架：删本文件、panel_model_config.css、index.html 的 #epModelConfigList 按钮、
- * #edModelConfigModal 视图段与那一行 script；下拉静态只剩「自动」，解析照走自动分流。
+ * 本页只管数据与编排：四栏分组表渲染委托 ui_model_table.js，安装/卸载动线委托
+ * ui_model_install.js；两模块不在（同行 script 被删）时回退朴素清单，页面不残。
+ * 硬件检测只在老师点进配置中心那一刻跑（probe=1）；启动注入下拉复用上次快照
+ * （probe=0），不在启动/轮询里跑探针。【启用/停用】与默认选择经 models.prefs_save
+ * 代笔进插件目录 model_prefs.toml（插件财产，carried 语义，不落宿主 data/）；
+ * 「自动分流默认」两下拉存 auto_image_seat/auto_text_formula_seat；YOLO【下载】
+ * 复用 ui_model.js 通道；云端【去 API 配置】。停用＝下拉不显示＋自动跳过，不卸载；
+ * 只有就绪且启用的条目进下拉（applyEngines）。画布内联视图：开合走 openView/closeView。
+ * 整块下架：删本文件、ui_model_table.js、ui_model_install.js、panel_model_config.css、
+ * panel_model_table.css、index.html 的 #epModelConfigList 按钮、#edModelConfigModal
+ * 视图段与那几行同行 script/link；下拉静态只剩「自动」，解析照走自动分流。
  */
 (function (global) {
   "use strict";
@@ -44,8 +44,6 @@
     var defaults = { layout: "auto", recognize: "auto" };
     var autoSeats = {};
     var pollTimer = null;
-    var installTimer = null;
-    var vlmTimer = null;
     var wired = false;
 
     function say(text) {
@@ -76,15 +74,45 @@
       return id;
     }
 
+    function entryOf(id) {
+      for (var i = 0; i < entries.length; i += 1) {
+        if (String(entries[i].id) === String(id)) return entries[i];
+      }
+      return null;
+    }
+
+    function savePrefs(patch) {
+      say("正在保存勾选…");
+      return hostCall("models.prefs_save", patch, 15000).then(function () {
+        return refresh(false);
+      }, function (error) {
+        say("保存失败：" + failText(error));
+        dockWarn("模型配置：勾选保存失败：" + failText(error));
+      });
+    }
+
+    function toggleEntry(entry) {
+      var disabled = [];
+      entries.forEach(function (item) {
+        var off = item.enabled === false;
+        if (String(item.id) === String(entry.id)) off = !off;
+        if (off) disabled.push(String(item.id));
+      });
+      savePrefs({ disabled: disabled });
+    }
+
     function renderHardware() {
       var box = el("div", "ep-model-config-hw");
       box.appendChild(el("p", "ep-model-config-hw-line",
         "本机显卡：" + (hardware.gpu_name || "读不到") +
-        "｜显存：" + (hardware.vram_label || "读不到")));
+        "｜显存：" + (hardware.vram_label || "读不到") +
+        "（点进本页时现测）"));
       if (hardware.detail) {
         box.appendChild(el("p", "ep-model-config-hw-detail", String(hardware.detail)));
       }
       if (tiers.length) {
+        var more = el("details", "ep-model-config-tiers-more");
+        more.appendChild(el("summary", "", "显存档位表（int4 估，标「约」）"));
         var table = el("table", "ep-model-config-tiers");
         var headRow = el("tr");
         headRow.appendChild(el("th", "", "显存档位"));
@@ -96,20 +124,11 @@
           row.appendChild(el("td", "", String(tier.fits || "")));
           table.appendChild(row);
         });
-        box.appendChild(table);
+        more.appendChild(table);
+        box.appendChild(more);
       }
       if (vramNote) box.appendChild(el("p", "ep-model-config-hw-note", vramNote));
       return box;
-    }
-
-    function savePrefs(patch) {
-      say("正在保存勾选…");
-      return hostCall("models.prefs_save", patch, 15000).then(function () {
-        return refresh();
-      }, function (error) {
-        say("保存失败：" + failText(error));
-        dockWarn("模型配置：勾选保存失败：" + failText(error));
-      });
     }
 
     function renderDefaults() {
@@ -139,14 +158,7 @@
       return box;
     }
 
-    function entryOf(id) {
-      for (var i = 0; i < entries.length; i += 1) {
-        if (String(entries[i].id) === String(id)) return entries[i];
-      }
-      return null;
-    }
-
-    /** T6 自动分流默认：两下拉只列就绪座＋自动；存过的未就绪座保留可见并标注。 */
+    /** T6 自动分流默认（置顶组）：两下拉只列就绪座＋自动；存过的未就绪座保留可见并标注。 */
     function renderAutoSeats() {
       var box = el("div", "ep-model-config-defaults ep-model-config-auto-seats");
       box.appendChild(el("span", "ep-model-config-defaults-label",
@@ -188,79 +200,71 @@
       return box;
     }
 
-    function toggleEntry(entry) {
-      var disabled = [];
-      entries.forEach(function (item) {
-        var off = item.enabled === false;
-        if (String(item.id) === String(entry.id)) off = !off;
-        if (off) disabled.push(String(item.id));
+    var installer = global.JzoEditorModelInstall ? global.JzoEditorModelInstall.create({
+      hostCall: hostCall, dockWarn: dockWarn, say: say,
+      hardware: function () { return hardware; },
+      refreshed: function () { refresh(false); },
+    }) : null;
+
+    var table = global.JzoEditorModelTable ? global.JzoEditorModelTable.create({
+      el: el,
+      actions: {
+        toggle: toggleEntry,
+        install: function (entry, button) {
+          if (installer) installer.install(entry, button);
+        },
+        uninstall: function (entry, button) {
+          if (installer) installer.uninstall(entry, button);
+        },
+        download: function (entry, button) { startDownload(button); },
+        assign: function () {
+          if (typeof openAiConfig === "function") openAiConfig();
+        },
+      },
+    }) : null;
+
+    /** 新表模块不在时的朴素清单回退（整块下架不残页）：名称＋徽章＋说明＋启用停用。 */
+    function fallbackRender() {
+      entries.forEach(function (entry) {
+        var row = el("div", "ep-model-config-row ep-model-config-" + String(entry.state || ""));
+        row.setAttribute("role", "listitem");
+        var head = el("div", "ep-model-config-head");
+        head.appendChild(el("span", "ep-model-config-name", String(entry.name || entry.id || "")));
+        head.appendChild(el("span", "ep-model-config-state",
+          String(entry.badge || STATE_LABELS[entry.state] || entry.state || "")));
+        var toggle = el("button", "ep-btn ep-mini-btn ep-model-config-toggle",
+          entry.enabled === false ? "启用" : "停用");
+        toggle.type = "button";
+        toggle.addEventListener("click", function () { toggleEntry(entry); });
+        head.appendChild(toggle);
+        row.appendChild(head);
+        row.appendChild(el("p", "ep-model-config-summary", String(entry.summary || "")));
+        row.appendChild(el("p", "ep-model-config-detail", String(entry.detail || "")));
+        listEl.appendChild(row);
       });
-      savePrefs({ disabled: disabled });
     }
 
     function render() {
       if (!listEl) return;
       listEl.textContent = "";
       listEl.appendChild(renderHardware());
-      listEl.appendChild(renderDefaults());
       listEl.appendChild(renderAutoSeats());
-      entries.forEach(function (entry) {
-        var state = String(entry.state || "");
-        var off = entry.enabled === false;
-        var row = el("div", "ep-model-config-row ep-model-config-" + state +
-          (off ? " ep-model-config-disabled" : ""));
-        row.setAttribute("role", "listitem");
-        var head = el("div", "ep-model-config-head");
-        head.appendChild(el("span", "ep-model-config-name", String(entry.name || entry.id || "")));
-        head.appendChild(el("span", "ep-model-config-state", STATE_LABELS[state] || state));
-        var toggle = el("button", "ep-btn ep-mini-btn ep-model-config-toggle", off ? "启用" : "停用");
-        toggle.type = "button";
-        toggle.title = "停用＝下拉不显示＋自动跳过，不卸载";
-        toggle.addEventListener("click", function () { toggleEntry(entry); });
-        head.appendChild(toggle);
-        row.appendChild(head);
-        row.appendChild(el("p", "ep-model-config-summary", String(entry.summary || "")));
-        if (entry.summary_usage) {
-          row.appendChild(el("p", "ep-model-config-usage", String(entry.summary_usage)));
-        }
-        row.appendChild(el("p", "ep-model-config-detail", String(entry.detail || "")));
-        if (state === "ready" && entry.assigned) {
-          row.appendChild(el("p", "ep-model-config-assigned", "当前指派：" + String(entry.assigned)));
-        }
-        var action = String(entry.action || "");
-        if (action === "download") {
-          var downloadBtn = el("button", "ep-btn ep-mini-btn ep-model-config-act", "下载");
-          downloadBtn.type = "button";
-          downloadBtn.addEventListener("click", function () { startDownload(downloadBtn); });
-          row.appendChild(downloadBtn);
-        } else if (action === "assign") {
-          var assignBtn = el("button", "ep-btn ep-mini-btn ep-model-config-act", "去 API 配置指派");
-          assignBtn.type = "button";
-          assignBtn.addEventListener("click", function () {
-            if (typeof openAiConfig === "function") openAiConfig();
-          });
-          row.appendChild(assignBtn);
-        } else if (action === "install") {
-          var installBtn = el("button", "ep-btn ep-mini-btn ep-model-config-act",
-            state === "blocked" ? "重试安装" : "安装本地 MinerU");
-          installBtn.type = "button";
-          installBtn.addEventListener("click", function () { startInstall(installBtn); });
-          row.appendChild(installBtn);
-        } else if (action === "install_vlm") {
-          var vlmBtn = el("button", "ep-btn ep-mini-btn ep-model-config-act",
-            state === "blocked" ? "重试安装" : "安装本地 VLM");
-          vlmBtn.type = "button";
-          vlmBtn.addEventListener("click", function () { startVlmInstall(vlmBtn); });
-          row.appendChild(vlmBtn);
-        }
-        listEl.appendChild(row);
-      });
+      listEl.appendChild(renderDefaults());
+      if (table) {
+        var host = el("div", "ep-mt-host");
+        listEl.appendChild(host);
+        table.renderInto(host, entries);
+      } else {
+        fallbackRender();
+      }
     }
 
-    /** 体检每次现算（D3b）：读失败不动下拉，保住上一次的就绪清单。 */
-    function refresh() {
+    /** 体检每次现算（D3b）；probe=true 才跑硬件真测（进页面那一刻），否则复用快照。
+     * 读失败不动下拉，保住上一次的就绪清单。 */
+    function refresh(probe) {
       say("正在体检模型状态…");
-      return hostCall("models.registry_status", {}, 15000).then(function (result) {
+      if (listEl) listEl.setAttribute("aria-busy", "true");
+      return hostCall("models.registry_status", { probe: probe ? 1 : 0 }, 15000).then(function (result) {
         entries = (result && Array.isArray(result.entries)) ? result.entries : [];
         hardware = (result && result.hardware) || {};
         tiers = (result && Array.isArray(result.vram_tiers)) ? result.vram_tiers : [];
@@ -269,11 +273,13 @@
         autoSeats = (result && result.auto_seats) || {};
         render();
         say("");
+        if (listEl) listEl.removeAttribute("aria-busy");
         if (typeof applyEngines === "function") applyEngines(entries, defaults);
         return entries;
       }, function (error) {
         say("模型状态读取失败：" + failText(error));
         dockWarn("模型配置：读取注册表失败：" + failText(error));
+        if (listEl) listEl.removeAttribute("aria-busy");
         return entries;
       });
     }
@@ -293,7 +299,7 @@
           var download = (status && status.download) || {};
           if (download.state === "downloading" && polls < 150) return;
           stopPolling();
-          refresh();
+          refresh(false);
         }, function () { stopPolling(); });
       }, 4000);
     }
@@ -304,96 +310,11 @@
         return;
       }
       button.disabled = true;
+      button.setAttribute("aria-busy", "true");
       button.textContent = "下载中…";
       say("下载进度在底栏【运行日志】；就绪后本页与下拉自动更新。");
       downloadModel();
       watchDownload();
-    }
-
-    function stopInstallPolling() {
-      if (installTimer) window.clearInterval(installTimer);
-      installTimer = null;
-    }
-
-    // 安装是后台线程：这里轮询进度快照，装好/装坏都刷新本页与下拉。
-    function watchInstall() {
-      if (installTimer) return;
-      var polls = 0;
-      installTimer = window.setInterval(function () {
-        polls += 1;
-        hostCall("models.mineru_status", {}, 15000).then(function (status) {
-          var state = String((status && status.state) || "");
-          var step = String((status && status.step) || "");
-          var message = String((status && status.message) || "");
-          if (state === "installing") {
-            say("正在安装本地 MinerU：" + (step || "准备中") + (message ? "（" + message + "）" : ""));
-            if (polls < 300) return;
-          }
-          stopInstallPolling();
-          if (state === "error") {
-            say("本地 MinerU 安装失败：" + message);
-            dockWarn("模型配置：MinerU 安装失败：" + message);
-          }
-          refresh();
-        }, function () { stopInstallPolling(); });
-      }, 4000);
-    }
-
-    function startInstall(button) {
-      button.disabled = true;
-      button.textContent = "安装中…";
-      say("正在发起本地 MinerU 一键安装（隔离环境、国内镜像）…");
-      hostCall("models.mineru_install", {}, 20000).then(function () {
-        watchInstall();
-      }, function (error) {
-        button.disabled = false;
-        button.textContent = "安装本地 MinerU";
-        say("安装请求失败：" + failText(error));
-        dockWarn("模型配置：MinerU 安装请求失败：" + failText(error));
-      });
-    }
-
-    function stopVlmPolling() {
-      if (vlmTimer) window.clearInterval(vlmTimer);
-      vlmTimer = null;
-    }
-
-    // 权重约 3.2GB，下载偏慢属预期：轮询窗口放宽到 1 小时，装好/装坏都刷新。
-    function watchVlmInstall() {
-      if (vlmTimer) return;
-      var polls = 0;
-      vlmTimer = window.setInterval(function () {
-        polls += 1;
-        hostCall("models.vlm_status", {}, 15000).then(function (status) {
-          var st = String((status && status.state) || "");
-          var step = String((status && status.step) || "");
-          var message = String((status && status.message) || "");
-          if (st === "installing") {
-            say("正在安装本地 VLM：" + (step || "准备中") + (message ? "（" + message + "）" : ""));
-            if (polls < 900) return;
-          }
-          stopVlmPolling();
-          if (st === "error") {
-            say("本地 VLM 安装失败：" + message);
-            dockWarn("模型配置：本地 VLM 安装失败：" + message);
-          }
-          refresh();
-        }, function () { stopVlmPolling(); });
-      }, 4000);
-    }
-
-    function startVlmInstall(button) {
-      button.disabled = true;
-      button.textContent = "安装中…";
-      say("正在发起本地 VLM 一键安装（隔离环境、国内镜像、权重约 3.2GB）…");
-      hostCall("models.vlm_install", {}, 20000).then(function () {
-        watchVlmInstall();
-      }, function (error) {
-        button.disabled = false;
-        button.textContent = "安装本地 VLM";
-        say("安装请求失败：" + failText(error));
-        dockWarn("模型配置：本地 VLM 安装请求失败：" + failText(error));
-      });
     }
 
     function open() {
@@ -401,16 +322,16 @@
       // 再点同一颗入口＝收视图回批次；视图互斥与状态还原归 openView/closeView。
       if (state.mode === "model_config") { closeView(); return; }
       openView("model_config");
-      refresh();
+      refresh(true);
     }
 
     function wire() {
       if (wired) return;
       wired = true;
       if (buttonEl) buttonEl.addEventListener("click", open);
-      if (refreshEl) refreshEl.addEventListener("click", function () { refresh(); });
+      if (refreshEl) refreshEl.addEventListener("click", function () { refresh(true); });
       if (backEl) backEl.addEventListener("click", closeView);
-      refresh();
+      refresh(false);
     }
 
     return { open: open, refresh: refresh, wire: wire };

@@ -130,6 +130,7 @@ family = "vlm"
 min_vram = 6
 can_cpu = false
 summary = "本地视觉大模型主力之一：读题写 LaTeX，试卷不出本机；T6 已接一键装与逐题推理。"
+brief = "本地 VLM·千问 3B：免费、卷子不出本机。要 {min_vram}G 以上显存；你这台 {vram_label} → {vram_verdict}。"
 summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），试卷不出本机，也能接公式裁图重认。准不准：3B 参数 int4 量化（Q4_K_M），日常印刷卷够用，复杂公式不如大档。快慢：免费里偏慢，吃显卡；显存够格时单题分钟级，首载模型更慢。吃不吃卡：吃，最低 6G 显存起步，低于 6G 直写不支持、请用云端视觉或 MinerU 兜底。免不免费：免费，权重约 3.2GB（Q4_K_M 约 1.9GB＋视觉投影 mmproj 约 1.3GB）从国内镜像点击预取，装进 engines/vlm/ 独立环境不碰底座、不装 torch。现状：推理通道 T6 已接线，选中后解析作业自动起本地服务，失败显性列清单、不偷换引擎。"
 rule = "vlm_local"
 ready_detail = "已安装（llama-cpp {version}），权重就绪且显存 {vram_label} 够 {min_vram}G 门槛；逐题本地推理已接线，试卷不出本机。"

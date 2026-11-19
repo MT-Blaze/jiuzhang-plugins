@@ -1,0 +1,186 @@
+/* 模型配置四栏表（2.20.0 卡§1，可整块下架）：删本文件与 index.html 同行 link 即可。
+   宽屏（≥1100px）左列表＋右详情；窄屏详情内联行下；375px 单元格竖排零横溢。
+   动效只在 prefers-reduced-motion: no-preference 下开。 */
+
+.ep-model-config-card {
+  width: 100%;
+}
+
+.ep-mt-layout {
+  display: block;
+}
+
+.ep-mt-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.ep-mt-group-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+.ep-mt-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ep-mt-table th {
+  text-align: left;
+  font-size: 12px;
+  color: var(--ink-soft);
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.ep-mt-table td {
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.ep-mt-cell-name { width: 22%; }
+.ep-mt-cell-brief { width: 40%; font-size: 13px; color: var(--ink-soft); cursor: pointer; }
+.ep-mt-cell-badge { width: 16%; }
+.ep-mt-cell-act { width: 22%; }
+
+.ep-mt-name {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.ep-mt-name:hover { text-decoration: underline; }
+.ep-mt-name:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.ep-mt-off .ep-mt-name,
+.ep-mt-off .ep-mt-cell-brief { opacity: 0.55; }
+
+.ep-mt-off-tag {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.ep-mt-badge {
+  display: inline-block;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--line);
+  color: var(--ink-soft);
+}
+
+.ep-mt-badge-ready { background: var(--accent); color: #fff; }
+.ep-mt-badge-degraded { background: #b07d2b; color: #fff; }
+.ep-mt-badge-blocked { background: var(--danger); color: #fff; }
+
+.ep-mt-cell-act .ep-btn { margin: 0 4px 4px 0; }
+.ep-mt-danger { color: var(--danger); }
+
+.ep-mt-detail-row .ep-mt-detail-cell {
+  background: var(--paper);
+  padding: 10px 12px;
+}
+
+.ep-mt-detail {
+  display: none;
+}
+
+.ep-mt-detail-box {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: var(--paper);
+}
+
+.ep-mt-detail-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ep-mt-detail-name { margin: 0; font-size: 14px; }
+.ep-mt-detail-close { margin-left: auto; }
+
+.ep-mt-detail-usage {
+  margin: 8px 0;
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.ep-mt-detail-more summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.ep-mt-detail-more summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.ep-mt-detail-text,
+.ep-mt-detail-assigned {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  white-space: pre-wrap;
+}
+
+.ep-mt-detail-empty { font-size: 13px; color: var(--ink-soft); }
+
+@media (min-width: 1100px) {
+  .ep-mt-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 16px;
+    align-items: start;
+  }
+  .ep-mt-detail {
+    display: block;
+    position: sticky;
+    top: 12px;
+  }
+}
+
+@media (max-width: 640px) {
+  .ep-mt-table,
+  .ep-mt-table tbody,
+  .ep-mt-table tr,
+  .ep-mt-table td {
+    display: block;
+    width: 100%;
+  }
+  .ep-mt-table thead { display: none; }
+  .ep-mt-table tr {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    padding: 6px 8px;
+  }
+  .ep-mt-table td { border-bottom: none; padding: 4px 0; }
+  .ep-mt-detail-row { border: none; padding: 0; }
+  .ep-mt-detail-row .ep-mt-detail-cell { padding: 0 0 8px; }
+  .ep-mt-cell-name { width: auto; }
+  .ep-mt-cell-brief { width: auto; }
+  .ep-mt-cell-badge { width: auto; }
+  .ep-mt-cell-act { width: auto; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .ep-mt-badge,
+  .ep-mt-name {
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+}
