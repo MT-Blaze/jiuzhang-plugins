@@ -65,11 +65,11 @@
     {
       "id": "org.jiuzhang.editor",
       "name": "录题工作台",
-      "version": "2.20.0",
+      "version": "2.21.0",
       "kind": "tool",
       "api_version": "1.0",
       "description": "录题工作台：三段式辅助栏。顶部固定当前题私有元数据（题号/题型/难度/分值/考向/标签），中部公共元数据（含年级）随画布滚动收起，底部存库/待审/删除。标签与考向走幽灵胶囊：空胶囊常驻，悬停接光标，打字出带路径搜索，回车取第一条。边缘同步冷蓝呼吸灯。拖入多文件各立独立批次。学校只存 school_id。查重命中亮红呼吸灯，可覆盖/放弃/合并解析二。",
-      "changelog": "1. 模型配置中心重做四栏表（名称/简要/状态/操作）按工种分组、自动分流默认组置顶；硬件检测只在点进配置中心那一刻跑；显存提醒活字现算（你这台 X G）；窄屏详情内联行下、键盘 Enter 展开收起＋焦点还原、375px 零横溢\n2. 批次行新增【重新识别】：确认弹窗摆明作废/留库账→原卷文件＋元数据原样交回收集框→选链路（7 链路＋自动，组合路对纯图卷显性拒绝）再入库；未入库题随批作废、已入库留库不动\n3. 本地 VLM 换 mineru-llama-cpp 国内 wheel（Vulkan 真 GPU 发动机，pip 四家测速选路、全败离线迁移 engines/mineru 现成栈）；GGUF 三源测速＋sha256 逐件校验；安装确认摆 3.3GB 成本\n4. VLM 名单六→三（千问/面壁/书生）＋Pix2Text·MFR 改名＋RapidOCR·准（medium）解锁一键装（139MB 两件权重 sha 校验）；安装/卸载只由界面点击发起，失败人话显性化",
+      "changelog": "2.21.0 随发布列车升版。本卡功能＝记号标准字典（闭集＋开集），落在底座整机库 data/latex_norm.db（223 条目/271 变体八记号族，出厂冻结、老师只写默认选择）与宿主字典控制台（五列对照＋开集待审人闸＋恢复出厂），清洗改字典驱动（闭集选中默认＋开集 confirmed 才改写，unknown 进待审不打印不进日志）。字典永不进任何模型提示词＝零 token 本地 SQLite。编辑器插件沙箱界面本身无功能改动，包内仅版本号随列车前进；min_host_version 仍 1.0.0（底座 1.2.0 满足）。",
       "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip",
       "mirrors": [
         "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip",
