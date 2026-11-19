@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="panel_biz.css">
   <link rel="stylesheet" href="effects.css">
   <!-- 失败显性化（可整块下架）：删这一行与下面 ui_failure_surface.js 那一行即可。 -->
-  <link rel="stylesheet" href="failure_surface.css">
+  <link rel="stylesheet" href="failure_surface.css"><link rel="stylesheet" href="panel_reidentify.css"><!-- T6 审核重认（整块下架：删这两行引用与 ui_reidentify.js/panel_reidentify.css） -->
 </head>
 <body>
   <!-- 画布实例（stage.center）：两屏。
@@ -84,7 +84,7 @@
               <span class="ed-engine-label">识别引擎</span>
               <select class="ed-engine-select" id="edRecognizeEngine">
                 <option value="auto" selected
-                        title="自动：本地先提取；坏题交 AI 修补，坏题率≥30% 转全量，最后 MinerU 兜底。">自动</option>
+                        title="自动：按卷型分流——纯图卷走默认整题座；文字卷文字直取＋公式裁图送默认公式座，失败显性不偷换。">自动</option>
               </select>
             </label>
           </div>
@@ -866,7 +866,7 @@
   <script src="ui_modal.js"></script>
   <script src="ui_model.js"></script>
   <!-- 模型配置页（可整块下架）：删这一行、上面那颗按钮与视图段、panel_model_config.css 即可；
-       下拉静态只剩「自动」，解析照走自动瀑布。 -->
+       下拉静态只剩「自动」，解析照走自动分流。 -->
   <script src="ui_model_config.js"></script>
   <script src="ui_dup.js"></script>
   <!-- 军令 #32 · 第五步：琥珀灯判定（两帧共用）→ 重题池画布那一屏 → 重题池辅助栏那一半。
@@ -892,7 +892,7 @@
   <script src="core_protocol.js"></script>
   <script src="ui_boot.js"></script>
   <script src="dev_probe_api.js"></script>
-  <script src="ui_failure_surface.js"></script>
+  <script src="ui_failure_surface.js"></script><script src="ui_reidentify.js"></script><!-- T6 审核重认（整块下架：删本行后半与 panel_reidentify.css 引用） -->
   <script src="plugin.js"></script>
 </body>
 </html>

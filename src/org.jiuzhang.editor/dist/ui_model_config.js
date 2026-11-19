@@ -5,12 +5,14 @@
  * 本页：逐条大白话使用说明；【启用/停用】与默认选择经 models.prefs_save 代笔进
  * 插件目录 model_prefs.toml（插件财产，carried 语义，不落宿主 data/）；
  * MinerU【安装本地 MinerU】经 models.mineru_install 一键装进隔离环境，进度轮询
- * models.mineru_status；YOLO【下载】复用 ui_model.js 通道；云端【去 API 配置指派】。
+ * models.mineru_status；本地 VLM【安装本地 VLM】经 models.vlm_install/vlm_status
+ * 同一套动线（T6）；「自动分流默认」两下拉经 models.prefs_save 存
+ * auto_image_seat/auto_text_formula_seat；YOLO【下载】复用 ui_model.js 通道；云端【去 API 配置指派】。
  * 停用＝下拉不显示＋自动跳过，不卸载；只有就绪且启用的条目进下拉（applyEngines）。
  * 2026-11-19 起本页是画布内联视图（不做弹窗）：开合走 openView/closeView 整屏切换，
  * 批次列表期间隐藏、返回原样恢复；数据驱动渲染一行不改。
  * 整块下架：删本文件、panel_model_config.css、index.html 的 #epModelConfigList 按钮、
- * #edModelConfigModal 视图段与那一行 script；下拉静态只剩「自动」，解析照走自动瀑布。
+ * #edModelConfigModal 视图段与那一行 script；下拉静态只剩「自动」，解析照走自动分流。
  */
 (function (global) {
   "use strict";
@@ -40,8 +42,10 @@
     var tiers = [];
     var vramNote = "";
     var defaults = { layout: "auto", recognize: "auto" };
+    var autoSeats = {};
     var pollTimer = null;
     var installTimer = null;
+    var vlmTimer = null;
     var wired = false;
 
     function say(text) {
@@ -135,6 +139,55 @@
       return box;
     }
 
+    function entryOf(id) {
+      for (var i = 0; i < entries.length; i += 1) {
+        if (String(entries[i].id) === String(id)) return entries[i];
+      }
+      return null;
+    }
+
+    /** T6 自动分流默认：两下拉只列就绪座＋自动；存过的未就绪座保留可见并标注。 */
+    function renderAutoSeats() {
+      var box = el("div", "ep-model-config-defaults ep-model-config-auto-seats");
+      box.appendChild(el("span", "ep-model-config-defaults-label",
+        "自动分流默认（按卷型分流走哪座；默认座未就绪会显性提示，不偷换）："));
+      [["auto_image_seat", "纯图卷·整题座", "recognize"],
+       ["auto_text_formula_seat", "文字卷·公式座", "formula"]]
+        .forEach(function (spec) {
+          var wrap = el("label", "ep-model-config-default-field");
+          wrap.appendChild(el("span", "", spec[1]));
+          var select = el("select", "ep-model-config-default-select");
+          var ready = readyIds(spec[2]);
+          var ids = ready.slice();
+          var current = String(defaults[spec[0]] || "auto");
+          if (current !== "auto" && ids.indexOf(current) < 0) ids.push(current);
+          ids.forEach(function (id) {
+            var label = nameOf(id);
+            if (id === "auto") {
+              var seat = String(autoSeats[spec[0]] || "");
+              var seatEntry = seat ? entryOf(seat) : null;
+              var note = seatEntry && seatEntry.state !== "ready" ? "·未就绪" : "";
+              label = seat ? "自动（现默认：" + nameOf(seat) + note + "）"
+                           : "自动（目录未给默认座，分流会显性提示）";
+            } else if (ready.indexOf(id) < 0) {
+              label += "（未就绪）";
+            }
+            var option = el("option", "", label);
+            option.value = id;
+            select.appendChild(option);
+          });
+          select.value = current;
+          select.addEventListener("change", function () {
+            var patch = {};
+            patch[spec[0]] = select.value;
+            savePrefs(patch);
+          });
+          wrap.appendChild(select);
+          box.appendChild(wrap);
+        });
+      return box;
+    }
+
     function toggleEntry(entry) {
       var disabled = [];
       entries.forEach(function (item) {
@@ -150,6 +203,7 @@
       listEl.textContent = "";
       listEl.appendChild(renderHardware());
       listEl.appendChild(renderDefaults());
+      listEl.appendChild(renderAutoSeats());
       entries.forEach(function (entry) {
         var state = String(entry.state || "");
         var off = entry.enabled === false;
@@ -192,6 +246,12 @@
           installBtn.type = "button";
           installBtn.addEventListener("click", function () { startInstall(installBtn); });
           row.appendChild(installBtn);
+        } else if (action === "install_vlm") {
+          var vlmBtn = el("button", "ep-btn ep-mini-btn ep-model-config-act",
+            state === "blocked" ? "重试安装" : "安装本地 VLM");
+          vlmBtn.type = "button";
+          vlmBtn.addEventListener("click", function () { startVlmInstall(vlmBtn); });
+          row.appendChild(vlmBtn);
         }
         listEl.appendChild(row);
       });
@@ -206,6 +266,7 @@
         tiers = (result && Array.isArray(result.vram_tiers)) ? result.vram_tiers : [];
         vramNote = String((result && result.vram_note) || "");
         defaults = (result && result.defaults) || { layout: "auto", recognize: "auto" };
+        autoSeats = (result && result.auto_seats) || {};
         render();
         say("");
         if (typeof applyEngines === "function") applyEngines(entries, defaults);
@@ -289,6 +350,49 @@
         button.textContent = "安装本地 MinerU";
         say("安装请求失败：" + failText(error));
         dockWarn("模型配置：MinerU 安装请求失败：" + failText(error));
+      });
+    }
+
+    function stopVlmPolling() {
+      if (vlmTimer) window.clearInterval(vlmTimer);
+      vlmTimer = null;
+    }
+
+    // 权重约 3.2GB，下载偏慢属预期：轮询窗口放宽到 1 小时，装好/装坏都刷新。
+    function watchVlmInstall() {
+      if (vlmTimer) return;
+      var polls = 0;
+      vlmTimer = window.setInterval(function () {
+        polls += 1;
+        hostCall("models.vlm_status", {}, 15000).then(function (status) {
+          var st = String((status && status.state) || "");
+          var step = String((status && status.step) || "");
+          var message = String((status && status.message) || "");
+          if (st === "installing") {
+            say("正在安装本地 VLM：" + (step || "准备中") + (message ? "（" + message + "）" : ""));
+            if (polls < 900) return;
+          }
+          stopVlmPolling();
+          if (st === "error") {
+            say("本地 VLM 安装失败：" + message);
+            dockWarn("模型配置：本地 VLM 安装失败：" + message);
+          }
+          refresh();
+        }, function () { stopVlmPolling(); });
+      }, 4000);
+    }
+
+    function startVlmInstall(button) {
+      button.disabled = true;
+      button.textContent = "安装中…";
+      say("正在发起本地 VLM 一键安装（隔离环境、国内镜像、权重约 3.2GB）…");
+      hostCall("models.vlm_install", {}, 20000).then(function () {
+        watchVlmInstall();
+      }, function (error) {
+        button.disabled = false;
+        button.textContent = "安装本地 VLM";
+        say("安装请求失败：" + failText(error));
+        dockWarn("模型配置：本地 VLM 安装请求失败：" + failText(error));
       });
     }
 

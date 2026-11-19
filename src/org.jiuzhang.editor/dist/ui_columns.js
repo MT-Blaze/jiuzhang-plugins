@@ -26,7 +26,7 @@
     var publishSelectionSoon = deps.publishSelectionSoon;
     var queueWorklistSave = deps.queueWorklistSave;
     var renderPool = deps.renderPool;
-    var replaceField = deps.replaceField;
+    var replaceField = deps.replaceField; var reidentify = deps.reidentify; // T6 审核重认钩子（整块下架删这半行与 renderQuestionBlock 末尾 decorate）
     var safeAssetUri = deps.safeAssetUri, imageUri = deps.imageUri;
     var setFormatButtons = deps.setFormatButtons;
     var amberReasons = deps.amberReasons;
@@ -381,7 +381,7 @@
       appendBody(analysis, parsed.analysis);
       block.appendChild(analysis);
     }
-    if (parsed.stray) block.appendChild(el("pre", "ed-raw", parsed.stray));
+    if (parsed.stray) block.appendChild(el("pre", "ed-raw", parsed.stray)); if (reidentify) reidentify.decorate(block, item, index);
     return block;
   }
 

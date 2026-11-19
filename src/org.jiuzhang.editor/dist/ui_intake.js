@@ -38,14 +38,14 @@
   // 双引擎只影响**下一次**开始解析；已立起来的批次绝不重跑。
   // 版面管「框在哪」，识别管「字是什么」，各选各的，互不替代。
   // 就绪清单与名字单源宿主 registry（models.registry_status），由模型配置页注入；
-  // 静态只留「自动」——配置页整块下架后，解析照走自动瀑布。
+  // 静态只留「自动」——配置页整块下架后，解析照走自动分流。
   var layoutAllowed = ["auto"];
   var recognizeAllowed = ["auto"];
   var engineNames = { auto: "自动" };
   var engineTitles = {};
   var AUTO_TITLES = {
     edLayoutEngine: "自动：图片卷先本地 OCR 切题，不达标退回文本层 → 本机 YOLO → 云端。",
-    edRecognizeEngine: "自动：本地先提取；坏题交 AI 修补，坏题率≥30% 转全量，最后 MinerU 兜底。"
+    edRecognizeEngine: "自动：按卷型分流——纯图卷走默认整题座；文字卷文字直取＋公式裁图送默认公式座，失败显性不偷换。"
   };
 
   function currentLayoutEngine() {

@@ -322,7 +322,7 @@
   var noteFieldNode = uiFormat.noteFieldNode;
   var setFormatButtons = uiFormat.setFormatButtons;
   var setSwapButton = uiFormat.setSwapButton;
-  var toggleSwapFromPanel = uiFormat.toggleSwapFromPanel;
+  var toggleSwapFromPanel = uiFormat.toggleSwapFromPanel; var uiReidentify = window.JzoEditorReidentify.create({ coreState: coreState, dockWarn: dockWarn, el: el, hostCall: hostCall, markDirty: function () { return uiColumns.markDirty.apply(uiColumns, arguments); }, refreshRow: function () { return uiColumns.refreshRow.apply(uiColumns, arguments); }, replaceField: replaceField, toast: toast, writeBackSourceText: function () { return uiColumns.writeBackSourceText.apply(uiColumns, arguments); } }); // T6 审核重认（整块下架：删本行后半与 uiColumns deps 的 reidentify）
 
   // 渲染栏顶部只读元数据条：独立一小块，整块删掉不影响渲染正文。
   var uiMetaStrip = window.JzoEditorMetaStrip.create({
@@ -363,7 +363,7 @@
     // 原卷页失败徽标（可整块下架）。
     renderPageFailure: uiFailureSurface.renderPageBadge,
     toast: toast,
-    coreState: coreState,
+    coreState: coreState, reidentify: uiReidentify,
   });
   var applyAiPatch = uiColumns.applyAiPatch;
   var itemImage = uiColumns.itemImage;
@@ -416,7 +416,7 @@
   var wireIntake = uiIntake.wireIntake;
 
   // 模型配置页（可整块下架）：删 ui_model_config.js 与 index.html 的按钮/视图段/引用即可；
-  // 模块不在时这里落 null，下拉静态只剩「自动」，解析照走自动瀑布。
+  // 模块不在时这里落 null，下拉静态只剩「自动」，解析照走自动分流。
   var uiModelConfig = window.JzoEditorModelConfig ? window.JzoEditorModelConfig.create({
     dom: dom,
     dockWarn: dockWarn,
