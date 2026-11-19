@@ -168,7 +168,9 @@
       var left = el("div", "ep-mt-groups");
       GROUPS.forEach(function (group) {
         var rows = entries.filter(function (entry) {
-          return group.caps.indexOf(String(entry.capability || "")) >= 0;
+          // 组合路是链路不是模型：进识别下拉，不进模型表（它的座已在表里）。
+          return group.caps.indexOf(String(entry.capability || "")) >= 0 &&
+            (entry.plan_recognize || []).indexOf("combo") < 0;
         });
         if (!rows.length) return;
         left.appendChild(groupTable(group, rows));

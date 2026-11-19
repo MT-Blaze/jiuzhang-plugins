@@ -146,7 +146,7 @@
         var entries = (result && Array.isArray(result.entries)) ? result.entries : [];
         var seats = entries.filter(function (entry) {
           var capability = String(entry.capability || "");
-          return capability === "formula" || capability === "recognize" || capability === "both";
+          return (capability === "formula" || capability === "recognize" || capability === "both") && (entry.plan_recognize || []).indexOf("combo") < 0; // 组合路是整批链路，单题/单块重认不列
         });
         if (!seats.length) {
           noteSay(note, "模型目录里没有识别席位，请先打开【模型配置】查看。", true);

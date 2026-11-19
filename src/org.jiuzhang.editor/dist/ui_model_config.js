@@ -54,12 +54,13 @@
       return (error && error.message) || "未知原因";
     }
 
-    function readyIds(kind) {
+    function readyIds(kind, noCombo) {
       var ids = ["auto"];
       entries.forEach(function (entry) {
         var capability = String(entry.capability || "");
         if (entry.state === "ready" && entry.enabled !== false &&
-            (capability === kind || capability === "both")) {
+            (capability === kind || capability === "both") &&
+            !(noCombo && (entry.plan_recognize || []).indexOf("combo") >= 0)) {
           ids.push(String(entry.id));
         }
       });
@@ -169,7 +170,7 @@
           var wrap = el("label", "ep-model-config-default-field");
           wrap.appendChild(el("span", "", spec[1]));
           var select = el("select", "ep-model-config-default-select");
-          var ready = readyIds(spec[2]);
+          var ready = readyIds(spec[2], spec[0] === "auto_image_seat");
           var ids = ready.slice();
           var current = String(defaults[spec[0]] || "auto");
           if (current !== "auto" && ids.indexOf(current) < 0) ids.push(current);

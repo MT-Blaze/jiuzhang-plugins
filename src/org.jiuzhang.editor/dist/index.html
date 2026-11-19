@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="panel_biz.css">
   <link rel="stylesheet" href="effects.css">
   <!-- 失败显性化（可整块下架）：删这一行与下面 ui_failure_surface.js 那一行即可。 -->
-  <link rel="stylesheet" href="failure_surface.css"><link rel="stylesheet" href="panel_reidentify.css"><!-- T6 审核重认（整块下架：删这两行引用与 ui_reidentify.js/panel_reidentify.css） -->
+  <link rel="stylesheet" href="failure_surface.css"><link rel="stylesheet" href="panel_reidentify.css"><!-- T6 审核重认（整块下架：删这两行引用与 ui_reidentify.js/panel_reidentify.css） --><link rel="stylesheet" href="panel_batch_return.css"><!-- §2 重新识别打回（整块下架：删本引用与 panel_batch_return.css） -->
 </head>
 <body>
   <!-- 画布实例（stage.center）：两屏。
@@ -836,7 +836,7 @@
   <script src="core_rich.js"></script>
   <script src="core_exam_source.js"></script>
   <script src="core_ai_fields.js"></script>
-  <script src="ui_batch_delete.js"></script>
+  <script src="ui_batch_delete.js"></script><script src="ui_batch_return.js"></script><!-- §2 重新识别打回（整块下架：删本行后半与 plugin.js 两处点名） -->
   <script src="ui_batches.js"></script>
   <script src="ui_intake.js"></script>
   <script src="ui_meta_hist.js"></script>

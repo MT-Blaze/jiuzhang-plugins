@@ -1,0 +1,37 @@
+/* 重新识别打回按钮（2.20.0 卡§2，可整块下架）：删本文件＋index.html 同行 link
+   引用即回退；按钮本体在 ui_batch_return.js，渲染调用点只是 plugin.js 一行包裹。 */
+.btn-return-batch {
+  flex: none;
+  margin-left: 0;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+
+.btn-return-batch:hover {
+  border-color: var(--focus);
+  background: rgba(58, 110, 165, 0.08);
+  color: var(--ink);
+}
+
+.btn-return-batch:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.btn-return-batch:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-return-batch { transition: none; }
+}

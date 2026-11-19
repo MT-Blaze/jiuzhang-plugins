@@ -42,7 +42,7 @@
   var layoutAllowed = ["auto"];
   var recognizeAllowed = ["auto"];
   var engineNames = { auto: "自动" };
-  var engineTitles = {};
+  var engineTitles = {}; var comboIds = [];
   var AUTO_TITLES = {
     edLayoutEngine: "自动：图片卷先本地 OCR 切题，不达标退回文本层 → 本机 YOLO → 云端。",
     edRecognizeEngine: "自动：按卷型分流——纯图卷走默认整题座；文字卷文字直取＋公式裁图送默认公式座，失败显性不偷换。"
@@ -73,10 +73,10 @@
         var option = document.createElement("option");
         option.value = id;
         option.textContent = engineNames[id] || id;
-        option.title = id === "auto" ? AUTO_TITLES[spec[0]] : (engineTitles[id] || "");
+        option.title = id === "auto" ? AUTO_TITLES[spec[0]] : (engineTitles[id] || ""); if (spec[0] === "edRecognizeEngine" && comboIds.indexOf(id) >= 0 && state.basket.length > 0 && state.basket.every(function (e) { return e.type.indexOf("image/") === 0 || (e.file && e.file.jzoPureImage === true); })) { option.disabled = true; option.title = "组合路只支持文字卷：筐里这份是纯图卷，文字直取无从谈起，请选整题直转座（MinerU/本地VLM/云端视觉）。"; } // §2 组合路对纯图卷灰＋人话（筐里全纯图才灰）
         select.appendChild(option);
       });
-      select.value = current;
+      select.value = current; if (select.selectedIndex >= 0 && select.options[select.selectedIndex].disabled) { state.ingestRecognizeEngine = "auto"; select.value = "auto"; dock("组合路只支持文字卷：筐里是纯图卷，识别已回到自动分流。"); } // §2 选中项被灰＝明示归自动，不静默
     });
   }
 
@@ -87,13 +87,13 @@
     layoutAllowed = ["auto"];
     recognizeAllowed = ["auto"];
     engineNames = { auto: "自动" };
-    engineTitles = {};
+    engineTitles = {}; comboIds = [];
     (entries || []).forEach(function (entry) {
       var id = String((entry && entry.id) || "");
       if (!id || id === "auto" || entry.state !== "ready" || entry.enabled === false) return;
       var capability = String(entry.capability || "");
       engineNames[id] = String(entry.name || id);
-      engineTitles[id] = String(entry.summary || "");
+      engineTitles[id] = String(entry.summary || ""); if ((entry.plan_recognize || []).indexOf("combo") >= 0) comboIds.push(id);
       if (capability === "layout" || capability === "both") layoutAllowed.push(id);
       if (capability === "recognize" || capability === "both") recognizeAllowed.push(id);
     });
@@ -120,7 +120,7 @@
       var reader = new FileReader();
       reader.onerror = function () { resolve(null); };
       reader.onload = function () {
-        resolve({ name: name, data_url: String(reader.result || "") });
+        resolve({ name: name, data_url: String(reader.result || ""), meta: (file && file.jzoMeta) || {} });
       };
       reader.readAsDataURL(file);
     });
@@ -443,7 +443,7 @@
     if (basketGoEl && !basketBusy) {
       basketGoEl.textContent = "🚀 开始解析 (" + state.basket.length + " 个文件)";
     }
-    if (basketEl) basketEl.setAttribute("data-count", String(state.basket.length));
+    if (basketEl) basketEl.setAttribute("data-count", String(state.basket.length)); paintEngineOptions(); // §2 筐变了就重刷下拉灰态
   }
 
   function basketRemove(id) {

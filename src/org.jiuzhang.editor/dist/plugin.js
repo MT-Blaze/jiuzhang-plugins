@@ -255,7 +255,7 @@
     publishView: function () { return uiBatches.publishView.apply(uiBatches, arguments); },
     refreshBatches: function () { return uiBatches.refreshBatches.apply(uiBatches, arguments); },
     setMode: function () { return uiBatches.setMode.apply(uiBatches, arguments); },
-  });
+  }); var uiBatchReturn = window.JzoEditorBatchReturn.create({ coreState: coreState, dock: dock, dockWarn: dockWarn, dom: dom, el: el, errorDetail: errorDetail, hostCall: hostCall, basketAdd: function () { return uiIntake.basketAdd.apply(uiIntake, arguments); }, publishSelection: publishSelection, publishView: function () { return uiBatches.publishView.apply(uiBatches, arguments); }, refreshBatches: function () { return uiBatches.refreshBatches.apply(uiBatches, arguments); }, setMode: function () { return uiBatches.setMode.apply(uiBatches, arguments); } }); // §2 重新识别打回（整块下架：删本行后半＋:291 包裹后半＋index.html 同行 script）
 
   // 失败显性化（2026-11-18 卡）：批次徽标/页徽标/增量播报，独立整块可下架。
   var uiFailureSurface = window.JzoFailureSurface.create({
@@ -288,7 +288,7 @@
     // 循环引用：renderAll 归更下面的 uiColumns，本块排得靠前，只能等它就位后再取。
     renderAll: function () { return uiColumns.renderAll.apply(uiColumns, arguments); },
     // 独立的整批删除按钮模块（可整块下架）。
-    renderDeleteBatchButton: uiBatchDelete.renderDeleteBatchButton,
+    renderDeleteBatchButton: function (card, row) { uiBatchDelete.renderDeleteBatchButton(card, row); uiBatchReturn.renderReturnBatchButton(card, row); }, // §2 打回按钮住删除旁（整块下架：还原本行单调用）
     // 失败徽标+清单（可整块下架）。
     renderBatchFailure: uiFailureSurface.renderBatchBadge,
     toast: toast,
