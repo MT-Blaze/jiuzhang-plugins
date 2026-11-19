@@ -49,8 +49,10 @@
       var rule = String(entry.rule || "");
       var state = String(entry.state || "");
       var local = rule === "mineru_local" || rule === "vlm_local" ||
-        (rule === "weight_present" && String(entry.store || "") === "ocr_medium");
-      if (action === "install" || action === "install_vlm" || action === "install_ocr") {
+        (rule === "weight_present" && (String(entry.store || "") === "ocr_medium" ||
+          String(entry.store || "") === "formula"));
+      if (action === "install" || action === "install_vlm" || action === "install_ocr" ||
+          action === "install_formula") {
         var installBtn = el("button", "ep-btn ep-mini-btn ep-mt-act",
           state === "blocked" ? "重试安装" : "安装");
         installBtn.type = "button";

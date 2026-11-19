@@ -16,7 +16,7 @@
     var say = deps.say;
     var hardware = deps.hardware;
     var refreshed = deps.refreshed;
-    var timers = { mineru: null, vlm: null, ocr: null };
+    var timers = { mineru: null, vlm: null, ocr: null, formula: null };
 
     function failText(error) {
       return (error && error.message) || "未知原因";
@@ -32,14 +32,25 @@
         String(entry.action || "") === "install_ocr";
     }
 
-    function kindOf(entry) {
-      return isVlm(entry) ? "vlm" : (isOcr(entry) ? "ocr" : "mineru");
+    function isFormula(entry) {
+      return String(entry.store || "") === "formula" ||
+        String(entry.action || "") === "install_formula";
     }
 
-    var KIND_NAMES = { vlm: "本地 VLM", mineru: "本地 MinerU", ocr: "RapidOCR·准" };
+    function kindOf(entry) {
+      return isVlm(entry) ? "vlm" : (isOcr(entry) ? "ocr" :
+        (isFormula(entry) ? "formula" : "mineru"));
+    }
+
+    var KIND_NAMES = { vlm: "本地 VLM", mineru: "本地 MinerU", ocr: "RapidOCR·准",
+      formula: "PP-FormulaNet·M" };
 
     function installConfirmText(entry) {
       var kind = kindOf(entry);
+      if (kind === "formula") {
+        return "安装 PP-FormulaNet·M 要下约 596MB 权重（模型 594MB＋配置 2.2MB，国内镜像）占磁盘。" +
+          "装好后公式专科与组合路公式步生效。仍要安装？";
+      }
       if (kind === "ocr") {
         return "安装 RapidOCR·准要下约 139MB 权重（det 62MB＋rec 77MB，国内镜像）占磁盘。" +
           "切题默认仍是快档，装好后在下拉里选准档才生效。仍要安装？";
@@ -119,8 +130,9 @@
     function uninstall(entry, button) {
       var name = String(entry.name || entry.id || "");
       var kind = kindOf(entry);
-      var folders = { vlm: "engines/vlm/", mineru: "engines/mineru/", ocr: "engines/ocr/" };
-      var lead = kind === "ocr" ? "将丢弃引擎缓存并删除 " : "将先停服务再删除 ";
+      var folders = { vlm: "engines/vlm/", mineru: "engines/mineru/", ocr: "engines/ocr/",
+        formula: "engines/formula/" };
+      var lead = (kind === "ocr" || kind === "formula") ? "将丢弃引擎缓存并删除 " : "将先停服务再删除 ";
       if (!window.confirm("确认卸载「" + name + "」？" + lead + folders[kind] +
           " 整个目录（含已下权重），下次使用要重新安装。已入库题目不受影响。")) return;
       busy(button, "卸载中…");

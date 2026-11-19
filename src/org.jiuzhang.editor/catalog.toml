@@ -233,10 +233,15 @@ capability = "formula"
 family = "formula"
 min_vram = 0
 can_cpu = true
-summary = "Paddle 公式识别移动档：专把公式图转 LaTeX；安装/推理/擂台同在 D 卡。"
-summary_usage = "干啥：公式专科，只把公式图转 LaTeX。准不准：专用公式模型，复杂公式比通用 OCR 稳。快慢：快，小模型。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源；安装/推理/擂台同在 D 卡，本卡只登记。"
-rule = "blocked"
-detail = "专科推理通道下一卡开（D 卡：安装＋推理＋擂台同在），本卡只登记说明；重认席可见，选中会如实提示。"
+summary = "Paddle 公式识别移动档：专把公式图转 LaTeX；权重一键装（约 596MB），CPU 秒级。"
+summary_usage = "干啥：公式专科，只把公式图转 LaTeX。准不准：专用公式模型，复杂公式比通用 OCR 稳。快慢：快，CPU 一块约 1 秒。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源（Apache-2.0）；权重约 596MB 一键装，擂台留 D 卡。"
+rule = "weight_present"
+store = "formula"
+plan_recognize = ["formula_pp_m"]
+ready_detail = "权重已装（onnx＋yml 两件 sha256 校验通过），公式专科通道就绪。"
+degraded_detail = "权重未安装（约 596MB，国内镜像），点【安装】一键下；装好公式专科与组合路公式步生效。"
+degraded_action = "install_formula"
+install_error_detail = "安装失败：{message}"
 
 [[entry]]
 id = "formula_pp_l"
