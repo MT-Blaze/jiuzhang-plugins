@@ -71,7 +71,15 @@
     return option;
   }
 
-  // 识别下拉分两组：整题OCR（自动＋整题座）／文字直取+公式·X（组合路）；版面下拉保持扁平。
+  // 识别下拉：自动是自动分流，单独置顶不归组；其余按禁用表头分「整题OCR／文字直取＋公式」两段平铺。版面下拉保持扁平。
+  function groupHead(text) {
+    var option = document.createElement("option");
+    option.value = "";
+    option.disabled = true;
+    option.textContent = text;
+    return option;
+  }
+
   function paintEngineOptions() {
     [["edLayoutEngine", layoutAllowed, currentLayoutEngine],
      ["edRecognizeEngine", recognizeAllowed, currentRecognizeEngine]].forEach(function (spec) {
@@ -80,13 +88,18 @@
       var current = spec[2]();
       select.textContent = "";
       if (spec[0] === "edRecognizeEngine") {
-        var whole = document.createElement("optgroup"); whole.label = "整题OCR";
-        var combo = document.createElement("optgroup"); combo.label = "文字直取+公式·X";
-        spec[1].forEach(function (id) {
-          (comboIds.indexOf(id) >= 0 ? combo : whole).appendChild(engineOption(id, spec[0]));
-        });
-        select.appendChild(whole);
-        if (combo.childNodes.length) select.appendChild(combo); // 无就绪组合＝整组不显示
+        var rest = spec[1].filter(function (id) { return id !== "auto"; });
+        var whole = rest.filter(function (id) { return comboIds.indexOf(id) < 0; });
+        var combos = rest.filter(function (id) { return comboIds.indexOf(id) >= 0; });
+        if (spec[1].indexOf("auto") >= 0) select.appendChild(engineOption("auto", spec[0]));
+        if (whole.length) {
+          select.appendChild(groupHead("—— 整题OCR ——"));
+          whole.forEach(function (id) { select.appendChild(engineOption(id, spec[0])); });
+        }
+        if (combos.length) {
+          select.appendChild(groupHead("—— 文字直取＋公式 ——"));
+          combos.forEach(function (id) { select.appendChild(engineOption(id, spec[0])); });
+        }
       } else {
         spec[1].forEach(function (id) { select.appendChild(engineOption(id, spec[0])); });
       }

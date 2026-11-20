@@ -184,101 +184,135 @@ route_note_recognize = "识别：只交本地面壁 VLM，本地切好单题截�
 
 [[entry]]
 id = "combo_cloud"
-name = "文字直取＋公式·云端视觉（组合路）"
+name = "云端 AI OCR"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
-summary = "文字卷组合路：正文文字直取不花钱，公式裁图送云端视觉转写；纯图卷不可用。"
+summary = "文字卷：正文文字直取不花钱，公式裁图送云端视觉转写；纯图卷不可用。"
 summary_usage = "干啥：带文字层的卷子，正文直接从文字层取（不花算力），只把公式裁图送云端视觉转 LaTeX。准不准：正文零误差（原字原样），公式看你指派的视觉模型。快慢：只有公式出网，比整卷转写快得多。吃不吃卡：不吃本机。免不免费：正文免费，公式按 API 额度计费。限制：只支持文字卷；纯图卷选它会显性报错，请改整题直转座。"
 rule = "task_assign"
 task = "ocr"
-ready_detail = "已指派：{name}（{model}）。组合路就绪：正文文字直取，公式裁图送云端视觉。"
-degraded_detail = "未指派视觉识别账号，组合路的公式转写没有着落。"
+ready_detail = "已指派：{name}（{model}）。正文文字直取，公式裁图送云端视觉。"
+degraded_detail = "未指派视觉识别账号，公式转写没有着落。"
 degraded_action = "assign"
 plan_recognize = ["combo"]
 combo_seat = "cloud_vision"
-route_note_recognize = "识别：组合路——正文文字直取，公式裁图只交云端视觉，失败标待核不整题降级。"
+route_note_recognize = "识别：正文文字直取，公式裁图只交云端视觉，失败标待核不整题降级。"
 
 [[entry]]
-id = "combo_vlm"
-name = "文字直取＋公式·本地VLM（组合路）"
+id = "combo_vlm_qwen"
+name = "千问 Qwen2.5-VL（本地）"
 capability = "recognize"
 min_vram = 6
 can_cpu = true
-summary = "文字卷组合路：正文文字直取，公式裁图送本地千问 VLM；卷子不出本机，纯图卷不可用。"
-summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，只把公式裁图送本地千问 VLM 转 LaTeX，卷子不出本机。准不准：正文零误差，公式 3B 小档日常印刷卷够用。快慢：只有公式进模型，比整卷转写快；显存不足走 CPU 慢兜底。吃不吃卡：6G 显存起步，低于 6G 只能 CPU 慢兜底。免不免费：免费。限制：只支持文字卷；纯图卷选它会显性报错，请改整题直转座。"
+summary = "文字卷：正文文字直取，公式裁图送本地千问 Qwen2.5-VL 转写；卷子不出本机，纯图卷不可用。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，只把公式裁图送本地千问 Qwen2.5-VL 转 LaTeX，卷子不出本机。准不准：正文零误差，公式 3B 小档日常印刷卷够用。快慢：只有公式进模型，比整卷转写快；显存不足走 CPU 慢兜底。吃不吃卡：6G 显存起步，低于 6G 只能 CPU 慢兜底。免不免费：免费。限制：只支持文字卷；纯图卷选它会显性报错，请改整题直转座。"
 rule = "vlm_local"
-ready_detail = "本地 VLM 已安装（llama-cpp {version}），组合路就绪：正文文字直取，公式裁图送本地千问。"
-missing_detail = "本地 VLM 未安装，组合路的公式转写没有着落。点【安装本地 VLM】一键装进隔离环境（国内镜像，约 3.2GB）。"
+ready_detail = "本地 VLM 已安装（llama-cpp {version}），正文文字直取，公式裁图送本地千问。"
+missing_detail = "本地 VLM 未安装，公式转写没有着落。点【安装本地 VLM】一键装进隔离环境（国内镜像，约 3.2GB）。"
 broken_detail = "{message}"
 install_error_detail = "安装失败：{message}"
 plan_recognize = ["combo"]
 combo_seat = "vlm_qwen"
-route_note_recognize = "识别：组合路——正文文字直取，公式裁图只交本地千问 VLM，失败标待核不整题降级。"
+route_note_recognize = "识别：正文文字直取，公式裁图只交本地千问 VLM，失败标待核不整题降级。"
+
+[[entry]]
+id = "combo_vlm_intern"
+name = "书生 InternVL3-2B（本地）"
+capability = "recognize"
+min_vram = 6
+can_cpu = true
+summary = "文字卷：正文文字直取，公式裁图送本地书生 InternVL3-2B 转写；卷子不出本机，纯图卷不可用。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，只把公式裁图送本地书生 InternVL3-2B 转 LaTeX，卷子不出本机。准不准：正文零误差，2B 小档日常印刷卷够用。快慢：只有公式进模型，比整卷转写快；显存不足走 CPU 慢兜底。吃不吃卡：6G 显存起步，低于 6G 只能 CPU 慢兜底。免不免费：免费（Apache-2.0）。限制：只支持文字卷；纯图卷选它会显性报错，请改整题直转座。"
+rule = "vlm_local"
+ready_detail = "本地 VLM 已安装（llama-cpp {version}），书生座权重就绪，正文文字直取，公式裁图送本地书生。"
+missing_detail = "书生座权重未安装，公式转写没有着落。点【安装】一键补齐书生座 GGUF 权重（国内镜像，约 1.74GB）。"
+broken_detail = "{message}"
+install_error_detail = "安装失败：{message}"
+plan_recognize = ["combo"]
+combo_seat = "vlm_intern"
+route_note_recognize = "识别：正文文字直取，公式裁图只交本地书生 VLM，失败标待核不整题降级。"
+
+[[entry]]
+id = "combo_vlm_minicpm"
+name = "面壁 MiniCPM-V-2.6（本地）"
+capability = "recognize"
+min_vram = 6
+can_cpu = true
+summary = "文字卷：正文文字直取，公式裁图送本地面壁 MiniCPM-V-2.6 转写；卷子不出本机，纯图卷不可用。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，只把公式裁图送本地面壁 MiniCPM-V-2.6 转 LaTeX，卷子不出本机。准不准：正文零误差，8B Q3 档日常卷面理解好于 2B/3B 小档。快慢：只有公式进模型，比整卷转写快；显存不足走 CPU 慢兜底。吃不吃卡：6G 显存起步，低于 6G 只能 CPU 慢兜底。免不免费：权重免费（商用须遵 MiniCPM Model License）。限制：只支持文字卷；纯图卷选它会显性报错，请改整题直转座。"
+rule = "vlm_local"
+ready_detail = "本地 VLM 已安装（llama-cpp {version}），面壁座权重就绪，正文文字直取，公式裁图送本地面壁。"
+missing_detail = "面壁座权重未安装，公式转写没有着落。点【安装】一键补齐面壁座 GGUF 权重（国内镜像，约 4.85GB）。商用前请阅读 MiniCPM Model License 官方条款。"
+broken_detail = "{message}"
+install_error_detail = "安装失败：{message}"
+plan_recognize = ["combo"]
+combo_seat = "vlm_minicpm"
+route_note_recognize = "识别：正文文字直取，公式裁图只交本地面壁 VLM，失败标待核不整题降级。"
 
 [[entry]]
 id = "combo_pp_m"
-name = "文字直取＋公式·PP-FormulaNet·M（组合路）"
+name = "PP-FormulaNet·M"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
-summary = "文字卷组合路：正文文字直取，公式裁图送 PP-FormulaNet·M 专科（已接线）。"
-summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 PP-FormulaNet·M。准不准：正文零误差；专科模型复杂公式比通用 OCR 稳。快慢：正文即取，公式小模型快。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源。现状：PP-M 权重未装时本组合显示未就绪并提供一键安装；装好后正文直取、公式裁图交 PP-M 专科；纯图卷选它会显性报错。"
+summary = "文字卷：正文文字直取，公式裁图送 PP-FormulaNet·M 专科（已接线）。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 PP-FormulaNet·M。准不准：正文零误差；专科模型复杂公式比通用 OCR 稳。快慢：正文即取，公式小模型快。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源。现状：PP-M 权重未装时本项显示未就绪并提供一键安装；装好后正文直取、公式裁图交 PP-M 专科；纯图卷选它会显性报错。"
 rule = "weight_present"
 store = "formula"
-ready_detail = "组合路就绪：正文文字直取；公式裁图交 PP-FormulaNet·M 专科通道（权重未装时公式标待核、正文不动）。"
-degraded_detail = "PP-FormulaNet·M 权重未安装（约 596MB，国内镜像），点【安装】一键下；装好本组合路随公式座就绪。"
+ready_detail = "正文文字直取；公式裁图交 PP-FormulaNet·M 专科通道（权重未装时公式标待核、正文不动）。"
+degraded_detail = "PP-FormulaNet·M 权重未安装（约 596MB，国内镜像），点【安装】一键下；装好本项随公式座就绪。"
 plan_recognize = ["combo"]
 combo_seat = "formula_pp_m"
-route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 PP-FormulaNet·M 专科。"
+route_note_recognize = "识别：正文文字直取，公式裁图交 PP-FormulaNet·M 专科。"
 
 [[entry]]
 id = "combo_pp_l"
-name = "文字直取+公式·PP-FormulaNet·L"
+name = "PP-FormulaNet·L"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
-summary = "文字卷组合路：正文文字直取，公式裁图送 PP-FormulaNet·L 专科（已接线）。"
-summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 PP-FormulaNet·L。准不准：正文零误差；专科大档复杂公式比移动档更稳。快慢：正文即取，公式大档比移动档慢，CPU 一块数秒。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源。现状：公式专科 L 通道已接线，本组合随公式座 L 档就绪（权重未装不显示）；纯图卷选它会显性报错。"
+summary = "文字卷：正文文字直取，公式裁图送 PP-FormulaNet·L 专科（已接线）。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 PP-FormulaNet·L。准不准：正文零误差；专科大档复杂公式比移动档更稳。快慢：正文即取，公式大档比移动档慢，CPU 一块数秒。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源。现状：公式专科 L 通道已接线，本项随公式座 L 档就绪（权重未装不显示）；纯图卷选它会显性报错。"
 rule = "weight_present"
 store = "formula_l"
-ready_detail = "组合路就绪：正文文字直取；公式裁图交 PP-FormulaNet·L 专科通道。"
-degraded_detail = "PP-FormulaNet·L 权重未安装（约 737MB，国内镜像），点【安装】一键下；装好本组合路随公式座 L 档就绪。"
+ready_detail = "正文文字直取；公式裁图交 PP-FormulaNet·L 专科通道。"
+degraded_detail = "PP-FormulaNet·L 权重未安装（约 737MB，国内镜像），点【安装】一键下；装好本项随公式座 L 档就绪。"
 plan_recognize = ["combo"]
 combo_seat = "formula_pp_l"
-route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 PP-FormulaNet·L 专科。"
+route_note_recognize = "识别：正文文字直取，公式裁图交 PP-FormulaNet·L 专科。"
 
 [[entry]]
 id = "combo_p2t"
-name = "文字直取+公式·Pix2Text·MFR"
+name = "Pix2Text·MFR"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
-summary = "文字卷组合路：正文文字直取，公式裁图送 Pix2Text·MFR 专科（已接线）。"
-summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 Pix2Text·MFR。准不准：正文零误差；社区常用印刷公式稳，手写一般。快慢：正文即取，公式小模型快，CPU 一块约 1 秒。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源。现状：公式专科 p2t 通道已接线，本组合随公式座 p2t 档就绪（权重未装不显示）；纯图卷选它会显性报错。"
+summary = "文字卷：正文文字直取，公式裁图送 Pix2Text·MFR 专科（已接线）。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 Pix2Text·MFR。准不准：正文零误差；社区常用印刷公式稳，手写一般。快慢：正文即取，公式小模型快，CPU 一块约 1 秒。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源。现状：公式专科 p2t 通道已接线，本项随公式座 p2t 档就绪（权重未装不显示）；纯图卷选它会显性报错。"
 rule = "weight_present"
 store = "formula_p2t"
-ready_detail = "组合路就绪：正文文字直取；公式裁图交 Pix2Text·MFR 专科通道。"
-degraded_detail = "Pix2Text·MFR 权重未安装（约 118MB，国内镜像），点【安装】一键下；装好本组合路随公式座 p2t 档就绪。"
+ready_detail = "正文文字直取；公式裁图交 Pix2Text·MFR 专科通道。"
+degraded_detail = "Pix2Text·MFR 权重未安装（约 118MB，国内镜像），点【安装】一键下；装好本项随公式座 p2t 档就绪。"
 plan_recognize = ["combo"]
 combo_seat = "formula_p2t"
-route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 Pix2Text·MFR 专科。"
+route_note_recognize = "识别：正文文字直取，公式裁图交 Pix2Text·MFR 专科。"
 
 [[entry]]
 id = "combo_texify"
-name = "文字直取+公式·Texify"
+name = "Texify"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
-summary = "文字卷组合路：正文文字直取，公式裁图送 Texify 专科（已接线）。"
-summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 Texify。准不准：正文零误差；专用公式模型印刷公式稳。快慢：正文即取，公式 CPU 一块数秒（fp16 稳态路）。吃不吃卡：不吃，CPU 可跑。免不免费：权重免费，许可 cc-by-sa-4.0（署名＋相同方式共享），商用须遵官方条款。现状：公式专科 Texify 通道已接线，本组合随公式座 Texify 档就绪（权重未装不显示）；纯图卷选它会显性报错。"
+summary = "文字卷：正文文字直取，公式裁图送 Texify 专科（已接线）。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 Texify。准不准：正文零误差；专用公式模型印刷公式稳。快慢：正文即取，公式 CPU 一块数秒（fp16 稳态路）。吃不吃卡：不吃，CPU 可跑。免不免费：权重免费，许可 cc-by-sa-4.0（署名＋相同方式共享），商用须遵官方条款。现状：公式专科 Texify 通道已接线，本项随公式座 Texify 档就绪（权重未装不显示）；纯图卷选它会显性报错。"
 rule = "weight_present"
 store = "formula_texify"
-ready_detail = "组合路就绪：正文文字直取；公式裁图交 Texify 专科通道。"
-degraded_detail = "Texify 权重未安装（约 628MB fp16，国内镜像），点【安装】一键下；装好本组合路随公式座 Texify 档就绪。"
+ready_detail = "正文文字直取；公式裁图交 Texify 专科通道。"
+degraded_detail = "Texify 权重未安装（约 628MB fp16，国内镜像），点【安装】一键下；装好本项随公式座 Texify 档就绪。"
 plan_recognize = ["combo"]
 combo_seat = "formula_texify"
-route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 Texify 专科。"
+route_note_recognize = "识别：正文文字直取，公式裁图交 Texify 专科。"
 
 [[entry]]
 id = "formula_pp_m"
