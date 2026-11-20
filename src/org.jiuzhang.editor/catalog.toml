@@ -233,6 +233,38 @@ combo_seat = "formula_pp_m"
 route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 PP-FormulaNet·M 专科。"
 
 [[entry]]
+id = "combo_pp_l"
+name = "文字直取+公式·PP-FormulaNet·L"
+capability = "recognize"
+min_vram = 0
+can_cpu = true
+summary = "文字卷组合路：正文文字直取，公式裁图送 PP-FormulaNet·L 专科（已接线）。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 PP-FormulaNet·L。准不准：正文零误差；专科大档复杂公式比移动档更稳。快慢：正文即取，公式大档比移动档慢，CPU 一块数秒。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源。现状：公式专科 L 通道已接线，本组合随公式座 L 档就绪（权重未装不显示）；纯图卷选它会显性报错。"
+rule = "weight_present"
+store = "formula_l"
+ready_detail = "组合路就绪：正文文字直取；公式裁图交 PP-FormulaNet·L 专科通道。"
+degraded_detail = "PP-FormulaNet·L 权重未安装（约 737MB，国内镜像），点【安装】一键下；装好本组合路随公式座 L 档就绪。"
+plan_recognize = ["combo"]
+combo_seat = "formula_pp_l"
+route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 PP-FormulaNet·L 专科。"
+
+[[entry]]
+id = "combo_p2t"
+name = "文字直取+公式·Pix2Text·MFR"
+capability = "recognize"
+min_vram = 0
+can_cpu = true
+summary = "文字卷组合路：正文文字直取，公式裁图送 Pix2Text·MFR 专科（已接线）。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 Pix2Text·MFR。准不准：正文零误差；社区常用印刷公式稳，手写一般。快慢：正文即取，公式小模型快，CPU 一块约 1 秒。吃不吃卡：不吃，CPU 可跑。免不免费：免费开源。现状：公式专科 p2t 通道已接线，本组合随公式座 p2t 档就绪（权重未装不显示）；纯图卷选它会显性报错。"
+rule = "weight_present"
+store = "formula_p2t"
+ready_detail = "组合路就绪：正文文字直取；公式裁图交 Pix2Text·MFR 专科通道。"
+degraded_detail = "Pix2Text·MFR 权重未安装（约 118MB，国内镜像），点【安装】一键下；装好本组合路随公式座 p2t 档就绪。"
+plan_recognize = ["combo"]
+combo_seat = "formula_p2t"
+route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 Pix2Text·MFR 专科。"
+
+[[entry]]
 id = "formula_pp_m"
 name = "PP-FormulaNet·M（公式专科）"
 capability = "formula"

@@ -65,11 +65,11 @@
     {
       "id": "org.jiuzhang.editor",
       "name": "录题工作台",
-      "version": "2.23.1",
+      "version": "2.24.0",
       "kind": "tool",
       "api_version": "1.0",
       "description": "录题工作台：三段式辅助栏。顶部固定当前题私有元数据（题号/题型/难度/分值/考向/标签），中部公共元数据（含年级）随画布滚动收起，底部存库/待审/删除。标签与考向走幽灵胶囊：空胶囊常驻，悬停接光标，打字出带路径搜索，回车取第一条。边缘同步冷蓝呼吸灯。拖入多文件各立独立批次。学校只存 school_id。查重命中亮红呼吸灯，可覆盖/放弃/合并解析二。",
-      "changelog": "2.23.1 MinerU 云整批提速配套文案（仅一条）。catalog.toml mineru 条目 route_note_recognize 改整批口径：本地切好单题截图后整批一次发送、逐题回填，失败不降级——与底座 extract_batch 整批链（一次 file-urls/batch、并行上传、单轮询、逐题回填与失败账本）对齐。其余条目一字不动；models/ 与 model_prefs.toml 不入包不碰；min_host_version 仍 1.0.0。",
+      "changelog": "2.24.0 默认引擎记上次＋识别下拉分组全组合。①默认改「记上次」：画布选座即回写上次选择（复用 default_layout/default_recognize 两键，不新增键不迁移），新批次初值＝上次；仅显式改座才回写，加载兜底 auto 不落盘（卸载不擦记忆），回写失败显性提示不阻断。②配置页砍掉「默认引擎」整行（renderDefaults），①改名「自动设置（按卷型分流…）」。③识别下拉分两组：整题OCR（auto＋就绪整题座）／文字直取+公式·X（组合路）；版面下拉仍平铺；纯图卷组合路置灰。④catalog 增 combo_pp_l/combo_p2t 两组合（weight_present 随本座公式权重就绪，镜像 combo_pp_m 语义但就绪随座），registry/router 零代码改动；texify 组合不预置。models/ 与 model_prefs.toml 不入包不碰；min_host_version 仍 1.0.0。",
       "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip",
       "mirrors": [
         "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip",

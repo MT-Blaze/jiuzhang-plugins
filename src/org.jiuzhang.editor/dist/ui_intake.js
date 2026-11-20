@@ -62,6 +62,16 @@
     return engineNames[key] || "自动";
   }
 
+  function engineOption(id, selectId) {
+    var option = document.createElement("option");
+    option.value = id;
+    option.textContent = engineNames[id] || id;
+    option.title = id === "auto" ? AUTO_TITLES[selectId] : (engineTitles[id] || "");
+    if (selectId === "edRecognizeEngine" && comboIds.indexOf(id) >= 0 && state.basket.length > 0 && state.basket.every(function (e) { return e.type.indexOf("image/") === 0 || (e.file && e.file.jzoPureImage === true); })) { option.disabled = true; option.title = "组合路只支持文字卷：筐里这份是纯图卷，文字直取无从谈起，请选整题直转座（MinerU/本地VLM/云端视觉）。"; } // §2 组合路对纯图卷灰＋人话（筐里全纯图才灰）
+    return option;
+  }
+
+  // 识别下拉分两组：整题OCR（自动＋整题座）／文字直取+公式·X（组合路）；版面下拉保持扁平。
   function paintEngineOptions() {
     [["edLayoutEngine", layoutAllowed, currentLayoutEngine],
      ["edRecognizeEngine", recognizeAllowed, currentRecognizeEngine]].forEach(function (spec) {
@@ -69,13 +79,17 @@
       if (!select) return;
       var current = spec[2]();
       select.textContent = "";
-      spec[1].forEach(function (id) {
-        var option = document.createElement("option");
-        option.value = id;
-        option.textContent = engineNames[id] || id;
-        option.title = id === "auto" ? AUTO_TITLES[spec[0]] : (engineTitles[id] || ""); if (spec[0] === "edRecognizeEngine" && comboIds.indexOf(id) >= 0 && state.basket.length > 0 && state.basket.every(function (e) { return e.type.indexOf("image/") === 0 || (e.file && e.file.jzoPureImage === true); })) { option.disabled = true; option.title = "组合路只支持文字卷：筐里这份是纯图卷，文字直取无从谈起，请选整题直转座（MinerU/本地VLM/云端视觉）。"; } // §2 组合路对纯图卷灰＋人话（筐里全纯图才灰）
-        select.appendChild(option);
-      });
+      if (spec[0] === "edRecognizeEngine") {
+        var whole = document.createElement("optgroup"); whole.label = "整题OCR";
+        var combo = document.createElement("optgroup"); combo.label = "文字直取+公式·X";
+        spec[1].forEach(function (id) {
+          (comboIds.indexOf(id) >= 0 ? combo : whole).appendChild(engineOption(id, spec[0]));
+        });
+        select.appendChild(whole);
+        if (combo.childNodes.length) select.appendChild(combo); // 无就绪组合＝整组不显示
+      } else {
+        spec[1].forEach(function (id) { select.appendChild(engineOption(id, spec[0])); });
+      }
       select.value = current; if (select.selectedIndex >= 0 && select.options[select.selectedIndex].disabled) { state.ingestRecognizeEngine = "auto"; select.value = "auto"; dock("组合路只支持文字卷：筐里是纯图卷，识别已回到自动分流。"); } // §2 选中项被灰＝明示归自动，不静默
     });
   }
@@ -228,7 +242,15 @@
       select.addEventListener("change", function () {
         var allowed = kind === "layout" ? layoutAllowed : recognizeAllowed;
         var key = String(select.value || "auto");
-        store(allowed.indexOf(key) < 0 ? "auto" : key);
+        var picked = allowed.indexOf(key) < 0 ? "auto" : key;
+        store(picked);
+        // 记上次：显式 change 才回写 prefs（复用 default_* 键语义＝上次选择），
+        // 加载期兜底归 auto 不回写（卸座不擦记忆）；失败显性 dock，不阻塞本次解析。
+        var patch = {}; patch[kind === "layout" ? "default_layout" : "default_recognize"] = picked;
+        hostCall("models.prefs_save", patch, 15000).then(null, function (error) {
+          dockWarn("记上次没存住：" + ((error && error.message) || "未知原因")
+            + "（本次选择仍生效，下次新批次可能不记得）", errorDetail(error));
+        });
         paint();
         dock((kind === "layout" ? "版面引擎：" : "识别引擎：")
           + engineLabel(kind, current()) + "（只对下一次【开始解析】生效）");

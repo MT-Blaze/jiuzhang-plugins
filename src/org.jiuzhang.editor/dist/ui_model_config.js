@@ -5,9 +5,10 @@
  * 本页只管数据与编排：四栏分组表渲染委托 ui_model_table.js，安装/卸载动线委托
  * ui_model_install.js；两模块不在（同行 script 被删）时回退朴素清单，页面不残。
  * 硬件检测只在老师点进配置中心那一刻跑（probe=1）；启动注入下拉复用上次快照
- * （probe=0），不在启动/轮询里跑探针。【启用/停用】与默认选择经 models.prefs_save
+ * （probe=0），不在启动/轮询里跑探针。【启用/停用】与自动设置经 models.prefs_save
  * 代笔进插件目录 model_prefs.toml（插件财产，carried 语义，不落宿主 data/）；
- * 「自动分流默认」两下拉存 auto_image_seat/auto_text_formula_seat；YOLO【下载】
+ * 「自动设置」两下拉存 auto_image_seat/auto_text_formula_seat；新批次默认＝记上次
+ * （画布选座由 ui_intake 回写上次选择，本页无手动默认行）；YOLO【下载】
  * 复用 ui_model.js 通道；云端【去 API 配置】。停用＝下拉不显示＋自动跳过，不卸载；
  * 只有就绪且启用的条目进下拉（applyEngines）。画布内联视图：开合走 openView/closeView。
  * 整块下架：删本文件、ui_model_table.js、ui_model_install.js、panel_model_config.css、
@@ -132,38 +133,13 @@
       return box;
     }
 
-    function renderDefaults() {
-      var box = el("div", "ep-model-config-defaults");
-      box.appendChild(el("span", "ep-model-config-defaults-label", "默认引擎（新批次初值）："));
-      [["layout", "版面", "default_layout"], ["recognize", "识别", "default_recognize"]]
-        .forEach(function (spec) {
-          var wrap = el("label", "ep-model-config-default-field");
-          wrap.appendChild(el("span", "", spec[1]));
-          var select = el("select", "ep-model-config-default-select");
-          var ids = readyIds(spec[0]);
-          ids.forEach(function (id) {
-            var option = el("option", "", nameOf(id));
-            option.value = id;
-            select.appendChild(option);
-          });
-          var current = String(defaults[spec[0]] || "auto");
-          select.value = ids.indexOf(current) < 0 ? "auto" : current;
-          select.addEventListener("change", function () {
-            var patch = {};
-            patch[spec[2]] = select.value;
-            savePrefs(patch);
-          });
-          wrap.appendChild(select);
-          box.appendChild(wrap);
-        });
-      return box;
-    }
-
-    /** T6 自动分流默认（置顶组）：两下拉只列就绪座＋自动；存过的未就绪座保留可见并标注。 */
+    /** T6 自动设置（置顶组）：两下拉只列就绪座＋自动；存过的未就绪座保留可见并标注。
+     * 新批次默认＝记上次（老师在画布选什么，下次初值就什么，由 ui_intake 回写 default_*），
+     * 本页不再设手动默认行。 */
     function renderAutoSeats() {
       var box = el("div", "ep-model-config-defaults ep-model-config-auto-seats");
       box.appendChild(el("span", "ep-model-config-defaults-label",
-        "自动分流默认（按卷型分流走哪座；默认座未就绪会显性提示，不偷换）："));
+        "自动设置（按卷型分流走哪座；默认座未就绪会显性提示，不偷换）："));
       [["auto_image_seat", "纯图卷·整题座", "recognize"],
        ["auto_text_formula_seat", "文字卷·公式座", "formula"]]
         .forEach(function (spec) {
@@ -250,7 +226,6 @@
       listEl.textContent = "";
       listEl.appendChild(renderHardware());
       listEl.appendChild(renderAutoSeats());
-      listEl.appendChild(renderDefaults());
       if (table) {
         var host = el("div", "ep-mt-host");
         listEl.appendChild(host);
