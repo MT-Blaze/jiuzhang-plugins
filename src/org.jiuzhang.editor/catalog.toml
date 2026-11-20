@@ -21,7 +21,7 @@
 # 老师在模型配置「自动分流默认」区可改（prefs 键 auto_image_seat/auto_text_formula_seat，选「自动」＝沿用本段）。
 # 默认哪条由 D 擂台实测后改本段即上架；默认座未就绪＝显性失败引导，绝不静默换座。
 
-vram_note = "int4 显存为估算、标「约」，以实测加载为准；4G 档不开，低于 6G 仍可安装但只能 CPU 慢兜底，或改云端视觉/MinerU。"
+vram_note = "int4 显存为估算、标「约」，以实测加载为准；4G 档不开，低于 6G 仍可安装但只能 CPU 慢兜底，或改云端 AI OCR/MinerU。"
 
 [auto]
 image_seat = "mineru_local"
@@ -78,12 +78,12 @@ route_note_layout = "版面：只跑本机 YOLO，失败不降级其他引擎。
 
 [[entry]]
 id = "cloud_vision"
-name = "云端视觉"
+name = "云端 AI OCR"
 capability = "both"
 min_vram = 0
 can_cpu = true
 summary = "API 配置里指派的视觉模型，切题兜底与整批转写共用。"
-summary_usage = "干啥：云端视觉模型切题＋整批转写。准不准：看你指派的模型，公式手写普遍较强。快慢：看网络与账号排队。吃不吃卡：不吃本机，算力在云端。免不免费：按你 API 账号的额度计费，不免费。"
+summary_usage = "干啥：云端 AI OCR模型切题＋整批转写。准不准：看你指派的模型，公式手写普遍较强。快慢：看网络与账号排队。吃不吃卡：不吃本机，算力在云端。免不免费：按你 API 账号的额度计费，不免费。"
 rule = "task_assign"
 task = "ocr"
 ready_detail = "已指派：{name}（{model}）。"
@@ -93,8 +93,8 @@ plan_layout = ["cloud"]
 plan_recognize = ["ai"]
 aliases_layout = ["cloud"]
 aliases_recognize = ["full_ocr"]
-route_note_layout = "版面：只交云端视觉，失败不降级其他引擎。"
-route_note_recognize = "识别：只交云端视觉，整批单题截图并发识别，失败不降级。"
+route_note_layout = "版面：只交云端 AI OCR，失败不降级其他引擎。"
+route_note_recognize = "识别：只交云端 AI OCR，整批单题截图并发识别，失败不降级。"
 
 [[entry]]
 id = "mineru"
@@ -137,7 +137,7 @@ min_vram = 6
 can_cpu = true
 summary = "本地视觉大模型主力之一：读题写 LaTeX，试卷不出本机；T6 已接一键装与逐题推理。"
 brief = "本地 VLM·千问 3B：免费、卷子不出本机。要 {min_vram}G 以上显存；你这台 {vram_label} → {vram_verdict}。"
-summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），试卷不出本机，也能接公式裁图重认。准不准：3B 参数 int4 量化（Q4_K_M），日常印刷卷够用，复杂公式不如大档。快慢：3B 小档，显存够格走显卡加速；CPU 兜底明显更慢（慢一个数量级），首载模型更慢。吃不吃卡：吃，6G 显存起步走显卡；低于 6G 仍可安装，但只能 CPU 慢兜底，也可改云端视觉或 MinerU。免不免费：免费，权重约 3.2GB（Q4_K_M 约 1.9GB＋视觉投影 mmproj 约 1.3GB）从国内镜像点击预取，装进 engines/vlm/ 独立环境不碰底座、不装 torch。现状：推理通道 T6 已接线，选中后解析作业自动起本地服务，失败显性列清单、不偷换引擎。"
+summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），试卷不出本机，也能接公式裁图重认。准不准：3B 参数 int4 量化（Q4_K_M），日常印刷卷够用，复杂公式不如大档。快慢：3B 小档，显存够格走显卡加速；CPU 兜底明显更慢（慢一个数量级），首载模型更慢。吃不吃卡：吃，6G 显存起步走显卡；低于 6G 仍可安装，但只能 CPU 慢兜底，也可改云端 AI OCR或 MinerU。免不免费：免费，权重约 3.2GB（Q4_K_M 约 1.9GB＋视觉投影 mmproj 约 1.3GB）从国内镜像点击预取，装进 engines/vlm/ 独立环境不碰底座、不装 torch。现状：推理通道 T6 已接线，选中后解析作业自动起本地服务，失败显性列清单、不偷换引擎。"
 rule = "vlm_local"
 ready_detail = "已安装（llama-cpp {version}），权重就绪且显存 {vram_label} 够 {min_vram}G 门槛；逐题本地推理已接线，试卷不出本机。"
 missing_detail = "未安装。点【安装本地 VLM】一键装进 engines/vlm/ 隔离环境并预取 GGUF 权重（国内镜像，约 3.2GB）。"
@@ -155,7 +155,7 @@ min_vram = 6
 can_cpu = true
 summary = "本地视觉大模型主力之一：中文卷面理解强；已接一键装与逐题推理，与千问座共享发动机、单活座切换。"
 brief = "本地 VLM·书生 2B：免费、卷子不出本机。要 {min_vram}G 以上显存；你这台 {vram_label} → {vram_verdict}。"
-summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），中文卷面理解强，试卷不出本机，也能接公式裁图重认。准不准：2B 参数 int4 量化（Q4_K_M），日常印刷卷够用，复杂公式不如大档。快慢：2B 小档比千问 3B 更轻，显存够格走显卡加速；CPU 兜底明显更慢（慢一个数量级），首载模型更慢。吃不吃卡：吃，6G 显存起步走显卡；低于 6G 仍可安装，但只能 CPU 慢兜底，也可改云端视觉或 MinerU。免不免费：免费（Apache-2.0），权重约 1.74GB（Q4_K_M 约 1.12GB＋视觉投影 mmproj 约 0.63GB）从国内镜像点击预取；发动机与千问座共享 engines/vlm/，不碰底座、不装 torch。现状：推理通道已接线，选中后解析作业自动起本地服务；同一时刻只跑一座，切座先停旧座，失败显性列清单、不偷换引擎。"
+summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），中文卷面理解强，试卷不出本机，也能接公式裁图重认。准不准：2B 参数 int4 量化（Q4_K_M），日常印刷卷够用，复杂公式不如大档。快慢：2B 小档比千问 3B 更轻，显存够格走显卡加速；CPU 兜底明显更慢（慢一个数量级），首载模型更慢。吃不吃卡：吃，6G 显存起步走显卡；低于 6G 仍可安装，但只能 CPU 慢兜底，也可改云端 AI OCR或 MinerU。免不免费：免费（Apache-2.0），权重约 1.74GB（Q4_K_M 约 1.12GB＋视觉投影 mmproj 约 0.63GB）从国内镜像点击预取；发动机与千问座共享 engines/vlm/，不碰底座、不装 torch。现状：推理通道已接线，选中后解析作业自动起本地服务；同一时刻只跑一座，切座先停旧座，失败显性列清单、不偷换引擎。"
 rule = "vlm_local"
 ready_detail = "已安装（llama-cpp {version}），书生座权重就绪且显存 {vram_label} 够 {min_vram}G 门槛；逐题本地推理已接线，试卷不出本机。"
 missing_detail = "未安装。点【安装】一键补齐书生座 GGUF 权重（国内镜像，约 1.74GB）；发动机与千问座共享，已装过则只下权重。"
@@ -173,7 +173,7 @@ min_vram = 6
 can_cpu = true
 summary = "本地视觉大模型主力之一：小显存友好，6G 档可跑 Q3_K_M；已接一键装与逐题推理，与千问座共享发动机、单活座切换。"
 brief = "本地 VLM·面壁 8B·Q3：权重免费（商用须遵官方许可）、卷子不出本机。要 {min_vram}G 以上显存；你这台 {vram_label} → {vram_verdict}。"
-summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），小显存友好，试卷不出本机，也能接公式裁图重认。准不准：8B 参数 Q3_K_M 量化，日常卷面理解好于 2B/3B 小档，极复杂公式仍不如云端大模型。快慢：显存够格走显卡加速；Q3_K_M 约 5.7G 显存占用，6G 卡稳进；CPU 兜底明显更慢（慢一个数量级），首载模型更慢。吃不吃卡：吃，6G 显存起步走显卡；低于 6G 仍可安装，但只能 CPU 慢兜底，也可改云端视觉或 MinerU。免不免费：权重免费下载（约 4.85GB：Q3_K_M 约 3.81GB＋视觉投影 mmproj 约 1.04GB，国内镜像点击预取），许可为 MiniCPM Model License——个人/学术研究免费，商用须遵守官方许可条款（按要求登记）；发动机与千问座共享 engines/vlm/，不碰底座、不装 torch。现状：推理通道已接线，选中后解析作业自动起本地服务；同一时刻只跑一座，切座先停旧座，失败显性列清单、不偷换引擎。"
+summary_usage = "干啥：本地视觉大模型读题写 LaTeX（行内 $...$、独立 $$...$$），小显存友好，试卷不出本机，也能接公式裁图重认。准不准：8B 参数 Q3_K_M 量化，日常卷面理解好于 2B/3B 小档，极复杂公式仍不如云端大模型。快慢：显存够格走显卡加速；Q3_K_M 约 5.7G 显存占用，6G 卡稳进；CPU 兜底明显更慢（慢一个数量级），首载模型更慢。吃不吃卡：吃，6G 显存起步走显卡；低于 6G 仍可安装，但只能 CPU 慢兜底，也可改云端 AI OCR或 MinerU。免不免费：权重免费下载（约 4.85GB：Q3_K_M 约 3.81GB＋视觉投影 mmproj 约 1.04GB，国内镜像点击预取），许可为 MiniCPM Model License——个人/学术研究免费，商用须遵守官方许可条款（按要求登记）；发动机与千问座共享 engines/vlm/，不碰底座、不装 torch。现状：推理通道已接线，选中后解析作业自动起本地服务；同一时刻只跑一座，切座先停旧座，失败显性列清单、不偷换引擎。"
 rule = "vlm_local"
 ready_detail = "已安装（llama-cpp {version}），面壁座权重就绪且显存 {vram_label} 够 {min_vram}G 门槛；逐题本地推理已接线，试卷不出本机。"
 missing_detail = "未安装。点【安装】一键补齐面壁座 GGUF 权重（国内镜像，约 4.85GB）；发动机与千问座共享，已装过则只下权重。商用前请阅读 MiniCPM Model License 官方条款。"
@@ -188,16 +188,16 @@ name = "云端 AI OCR"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
-summary = "文字卷：正文文字直取不花钱，公式裁图送云端视觉转写；纯图卷不可用。"
-summary_usage = "干啥：带文字层的卷子，正文直接从文字层取（不花算力），只把公式裁图送云端视觉转 LaTeX。准不准：正文零误差（原字原样），公式看你指派的视觉模型。快慢：只有公式出网，比整卷转写快得多。吃不吃卡：不吃本机。免不免费：正文免费，公式按 API 额度计费。限制：只支持文字卷；纯图卷选它会显性报错，请改整题直转座。"
+summary = "文字卷：正文文字直取不花钱，公式裁图送云端 AI OCR转写；纯图卷不可用。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取（不花算力），只把公式裁图送云端 AI OCR转 LaTeX。准不准：正文零误差（原字原样），公式看你指派的视觉模型。快慢：只有公式出网，比整卷转写快得多。吃不吃卡：不吃本机。免不免费：正文免费，公式按 API 额度计费。限制：只支持文字卷；纯图卷选它会显性报错，请改整题直转座。"
 rule = "task_assign"
 task = "ocr"
-ready_detail = "已指派：{name}（{model}）。正文文字直取，公式裁图送云端视觉。"
+ready_detail = "已指派：{name}（{model}）。正文文字直取，公式裁图送云端 AI OCR。"
 degraded_detail = "未指派视觉识别账号，公式转写没有着落。"
 degraded_action = "assign"
 plan_recognize = ["combo"]
 combo_seat = "cloud_vision"
-route_note_recognize = "识别：正文文字直取，公式裁图只交云端视觉，失败标待核不整题降级。"
+route_note_recognize = "识别：正文文字直取，公式裁图只交云端 AI OCR，失败标待核不整题降级。"
 
 [[entry]]
 id = "combo_vlm_qwen"
@@ -316,7 +316,7 @@ route_note_recognize = "识别：正文文字直取，公式裁图交 Texify 专
 
 [[entry]]
 id = "formula_pp_m"
-name = "PP-FormulaNet·M（公式专科）"
+name = "PP-FormulaNet·M"
 capability = "formula"
 family = "formula"
 min_vram = 0
@@ -333,7 +333,7 @@ install_error_detail = "安装失败：{message}"
 
 [[entry]]
 id = "formula_pp_l"
-name = "PP-FormulaNet·L（公式专科）"
+name = "PP-FormulaNet·L"
 capability = "formula"
 family = "formula"
 min_vram = 0
@@ -350,7 +350,7 @@ install_error_detail = "安装失败：{message}"
 
 [[entry]]
 id = "formula_p2t"
-name = "Pix2Text·MFR（公式专科）"
+name = "Pix2Text·MFR"
 capability = "formula"
 family = "formula"
 min_vram = 0
@@ -367,7 +367,7 @@ install_error_detail = "安装失败：{message}"
 
 [[entry]]
 id = "formula_texify"
-name = "Texify（公式专科）"
+name = "Texify"
 capability = "formula"
 family = "formula"
 min_vram = 0

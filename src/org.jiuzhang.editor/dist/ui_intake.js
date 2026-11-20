@@ -67,7 +67,7 @@
     option.value = id;
     option.textContent = engineNames[id] || id;
     option.title = id === "auto" ? AUTO_TITLES[selectId] : (engineTitles[id] || "");
-    if (selectId === "edRecognizeEngine" && comboIds.indexOf(id) >= 0 && state.basket.length > 0 && state.basket.every(function (e) { return e.type.indexOf("image/") === 0 || (e.file && e.file.jzoPureImage === true); })) { option.disabled = true; option.title = "只支持文字卷：筐里这份是纯图卷，文字直取无从谈起，请选整题直转座（MinerU/本地VLM/云端视觉）。"; } // §2 纯图卷置灰＋人话（筐里全纯图才灰）
+    if (selectId === "edRecognizeEngine" && comboIds.indexOf(id) >= 0 && state.basket.length > 0 && state.basket.every(function (e) { return e.type.indexOf("image/") === 0 || (e.file && e.file.jzoPureImage === true); })) { option.disabled = true; option.title = "只支持文字卷：筐里这份是纯图卷，文字直取无从谈起，请选整题直转座（MinerU/本地VLM/云端 AI OCR）。"; } // §2 纯图卷置灰＋人话（筐里全纯图才灰）
     return option;
   }
 
