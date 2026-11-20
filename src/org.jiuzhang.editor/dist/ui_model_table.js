@@ -51,10 +51,11 @@
       var local = rule === "mineru_local" || rule === "vlm_local" ||
         (rule === "weight_present" && (String(entry.store || "") === "ocr_medium" ||
           String(entry.store || "") === "formula" || String(entry.store || "") === "formula_l" ||
-          String(entry.store || "") === "formula_p2t"));
+          String(entry.store || "") === "formula_p2t" || String(entry.store || "") === "formula_texify"));
       if (action === "install" || action === "install_vlm" || action === "install_ocr" ||
           action === "install_formula" || action === "install_formula_l" ||
-          action === "install_formula_p2t" || action === "install_vlm_intern" ||
+          action === "install_formula_p2t" || action === "install_formula_texify" ||
+          action === "install_vlm_intern" ||
           action === "install_vlm_minicpm") {
         var installBtn = el("button", "ep-btn ep-mini-btn ep-mt-act",
           state === "blocked" ? "重试安装" : "安装");

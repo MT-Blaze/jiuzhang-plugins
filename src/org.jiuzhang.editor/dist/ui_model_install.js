@@ -1,5 +1,5 @@
 /**
- * ui_model_install.js —— 模型安装/卸载动线（2.20.0 卡§4/§5/§7＋安装接线卡座5/6 VLM 三座，可整块下架）。
+ * ui_model_install.js —— 模型安装/卸载动线（2.20.0 卡§4/§5/§7＋安装接线卡座5/6 VLM 三座＋接线卡④ Texify，可整块下架）。
  *
  * 安装点击先弹确认（§5 活字：显存不够摆成本＋CPU 慢兜底丑话，够格只摆成本不吓唬），
  * 点头才出网（models.mineru_install / models.vlm[_intern|_minicpm]_install，点击内多镜像测速选路）；
@@ -17,7 +17,7 @@
     var hardware = deps.hardware;
     var refreshed = deps.refreshed;
     var timers = { mineru: null, vlm: null, vlm_intern: null, vlm_minicpm: null,
-      ocr: null, formula: null, formula_l: null, formula_p2t: null };
+      ocr: null, formula: null, formula_l: null, formula_p2t: null, formula_texify: null };
 
     function failText(error) {
       return (error && error.message) || "未知原因";
@@ -58,16 +58,23 @@
         String(entry.action || "") === "install_formula_p2t";
     }
 
+    function isFormulaTexify(entry) {
+      return String(entry.store || "") === "formula_texify" ||
+        String(entry.action || "") === "install_formula_texify";
+    }
+
     function kindOf(entry) {
       return isVlmIntern(entry) ? "vlm_intern" : (isVlmMinicpm(entry) ? "vlm_minicpm" :
         (isVlm(entry) ? "vlm" : (isOcr(entry) ? "ocr" :
           (isFormulaP2t(entry) ? "formula_p2t" :
-            (isFormulaL(entry) ? "formula_l" : (isFormula(entry) ? "formula" : "mineru"))))));
+            (isFormulaTexify(entry) ? "formula_texify" :
+              (isFormulaL(entry) ? "formula_l" : (isFormula(entry) ? "formula" : "mineru")))))));
     }
 
     var KIND_NAMES = { vlm: "本地 VLM·千问", vlm_intern: "本地 VLM·书生",
       vlm_minicpm: "本地 VLM·面壁", mineru: "本地 MinerU", ocr: "RapidOCR·准",
-      formula: "PP-FormulaNet·M", formula_l: "PP-FormulaNet·L", formula_p2t: "Pix2Text·MFR" };
+      formula: "PP-FormulaNet·M", formula_l: "PP-FormulaNet·L", formula_p2t: "Pix2Text·MFR",
+      formula_texify: "Texify" };
 
     function installConfirmText(entry) {
       var kind = kindOf(entry);
@@ -82,6 +89,11 @@
       if (kind === "formula_p2t") {
         return "安装 Pix2Text·MFR 要下约 118MB 权重（编码器 87MB＋解码器 30MB＋词表 39KB，国内镜像）占磁盘。" +
           "装好后公式专科 p2t 档生效。仍要安装？";
+      }
+      if (kind === "formula_texify") {
+        return "安装 Texify 要下约 628MB 权重（fp16 编码器 151MB＋解码器 477MB＋四小件，国内镜像）占磁盘。" +
+          "权重许可 cc-by-sa-4.0（署名＋相同方式共享）：个人/教研免费用，商用或二次分发须遵官方相同方式共享条款。" +
+          "装好后公式专科 Texify 档与组合路公式步生效。仍要安装？";
       }
       if (kind === "ocr") {
         return "安装 RapidOCR·准要下约 139MB 权重（det 62MB＋rec 77MB，国内镜像）占磁盘。" +
@@ -175,8 +187,10 @@
       if (kind.indexOf("vlm") === 0) {
         scope = "engines/vlm/models/ 里本座两件权重（其他座不受影响；各座全卸空才连发动机目录一起删）";
         lead = "在跑本座会先停服，再删除 ";
-      } else if (kind === "formula" || kind === "formula_l" || kind === "formula_p2t") {
-        var pieces = { formula: "两件", formula_l: "两件", formula_p2t: "三件" };
+      } else if (kind === "formula" || kind === "formula_l" || kind === "formula_p2t" ||
+          kind === "formula_texify") {
+        var pieces = { formula: "两件", formula_l: "两件", formula_p2t: "三件",
+          formula_texify: "六件" };
         scope = "engines/formula/models/ 里本档" + pieces[kind] + "权重（其他公式档不受影响）";
         lead = "将丢弃引擎缓存并删除 ";
       } else {

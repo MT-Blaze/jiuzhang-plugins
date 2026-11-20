@@ -265,6 +265,22 @@ combo_seat = "formula_p2t"
 route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 Pix2Text·MFR 专科。"
 
 [[entry]]
+id = "combo_texify"
+name = "文字直取+公式·Texify"
+capability = "recognize"
+min_vram = 0
+can_cpu = true
+summary = "文字卷组合路：正文文字直取，公式裁图送 Texify 专科（已接线）。"
+summary_usage = "干啥：带文字层的卷子，正文直接从文字层取，公式裁图送公式专科 Texify。准不准：正文零误差；专用公式模型印刷公式稳。快慢：正文即取，公式 CPU 一块数秒（fp16 稳态路）。吃不吃卡：不吃，CPU 可跑。免不免费：权重免费，许可 cc-by-sa-4.0（署名＋相同方式共享），商用须遵官方条款。现状：公式专科 Texify 通道已接线，本组合随公式座 Texify 档就绪（权重未装不显示）；纯图卷选它会显性报错。"
+rule = "weight_present"
+store = "formula_texify"
+ready_detail = "组合路就绪：正文文字直取；公式裁图交 Texify 专科通道。"
+degraded_detail = "Texify 权重未安装（约 628MB fp16，国内镜像），点【安装】一键下；装好本组合路随公式座 Texify 档就绪。"
+plan_recognize = ["combo"]
+combo_seat = "formula_texify"
+route_note_recognize = "识别：组合路——正文文字直取，公式裁图交 Texify 专科。"
+
+[[entry]]
 id = "formula_pp_m"
 name = "PP-FormulaNet·M（公式专科）"
 capability = "formula"
@@ -322,10 +338,15 @@ capability = "formula"
 family = "formula"
 min_vram = 0
 can_cpu = true
-summary = "Texify 公式转 LaTeX：MinerU 同源生态；官方只发 torch 权重无 ONNX，底座零 torch 铁律下登记跳过。"
-summary_usage = "干啥：公式专科，把公式图转 LaTeX。准不准：印刷公式稳，与 MinerU 生态同源。快慢：较快。吃不吃卡：CPU 可跑，有卡更快。免不免费：免费开源。现状：官方仓只发 safetensors（torch 权重，约 625MB），没有 ONNX 出口；底座不装 torch（零新依赖铁律），本座登记跳过——官方出 ONNX 或另卡拍板隔离 torch 环境时可后补。"
-rule = "blocked"
-detail = "登记跳过：官方只发 torch 权重（safetensors）无 ONNX，底座零 torch 铁律不装；官方出 ONNX 或另卡拍板隔离环境时可后补。重认席可见，选中会如实提示。"
+summary = "Texify 公式转 LaTeX：社区 ONNX 干净房间接线，零新依赖；权重一键装（约 628MB fp16），CPU 可跑。"
+summary_usage = "干啥：公式专科，把公式图转 LaTeX。准不准：专用公式模型，印刷公式稳，与 MinerU 生态同源。快慢：CPU 一块数秒（fp16 稳态路）。吃不吃卡：不吃，CPU 可跑。免不免费：权重免费，许可 cc-by-sa-4.0（署名＋相同方式共享）——个人/教研免费用，商用或二次分发须遵官方相同方式共享条款；权重约 628MB 一键装（fp16 编码器＋解码器＋四小件共六件）。现状：社区 ONNX 已接线（int8 档早判红弃用，fp16 稳态路），权重未装时点【安装】。"
+rule = "weight_present"
+store = "formula_texify"
+plan_recognize = ["formula_texify"]
+ready_detail = "权重已装（fp16 六件 sha256 校验通过），公式专科 Texify 通道就绪。"
+degraded_detail = "权重未安装（约 628MB fp16，国内镜像），点【安装】一键下；装好公式专科 Texify 档生效。权重许可 cc-by-sa-4.0（署名＋相同方式共享），商用须遵官方条款。"
+degraded_action = "install_formula_texify"
+install_error_detail = "安装失败：{message}"
 
 # 本地 VLM 显存档位表（int4 估，标「约」，实测加载为准）：4G 档不建，6G 起。
 [[vram_tier]]
