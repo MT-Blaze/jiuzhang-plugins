@@ -184,7 +184,6 @@ route_note_recognize = "识别：只交本地面壁 VLM，本地切好单题截�
 
 [[entry]]
 id = "combo_cloud"
-name = "云端 AI OCR"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
@@ -201,7 +200,6 @@ route_note_recognize = "识别：正文文字直取，公式裁图只交云端 A
 
 [[entry]]
 id = "combo_vlm_qwen"
-name = "千问 Qwen2.5-VL（本地）"
 capability = "recognize"
 min_vram = 6
 can_cpu = true
@@ -218,7 +216,6 @@ route_note_recognize = "识别：正文文字直取，公式裁图只交本地�
 
 [[entry]]
 id = "combo_vlm_intern"
-name = "书生 InternVL3-2B（本地）"
 capability = "recognize"
 min_vram = 6
 can_cpu = true
@@ -235,7 +232,6 @@ route_note_recognize = "识别：正文文字直取，公式裁图只交本地�
 
 [[entry]]
 id = "combo_vlm_minicpm"
-name = "面壁 MiniCPM-V-2.6（本地）"
 capability = "recognize"
 min_vram = 6
 can_cpu = true
@@ -252,7 +248,6 @@ route_note_recognize = "识别：正文文字直取，公式裁图只交本地�
 
 [[entry]]
 id = "combo_pp_m"
-name = "PP-FormulaNet·M"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
@@ -268,7 +263,6 @@ route_note_recognize = "识别：正文文字直取，公式裁图交 PP-Formula
 
 [[entry]]
 id = "combo_pp_l"
-name = "PP-FormulaNet·L"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
@@ -284,7 +278,6 @@ route_note_recognize = "识别：正文文字直取，公式裁图交 PP-Formula
 
 [[entry]]
 id = "combo_p2t"
-name = "Pix2Text·MFR"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
@@ -300,7 +293,6 @@ route_note_recognize = "识别：正文文字直取，公式裁图交 Pix2Text·
 
 [[entry]]
 id = "combo_texify"
-name = "Texify"
 capability = "recognize"
 min_vram = 0
 can_cpu = true
