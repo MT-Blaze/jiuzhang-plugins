@@ -65,11 +65,11 @@
     {
       "id": "org.jiuzhang.editor",
       "name": "录题工作台",
-      "version": "2.23.0",
+      "version": "2.23.1",
       "kind": "tool",
       "api_version": "1.0",
       "description": "录题工作台：三段式辅助栏。顶部固定当前题私有元数据（题号/题型/难度/分值/考向/标签），中部公共元数据（含年级）随画布滚动收起，底部存库/待审/删除。标签与考向走幽灵胶囊：空胶囊常驻，悬停接光标，打字出带路径搜索，回车取第一条。边缘同步冷蓝呼吸灯。拖入多文件各立独立批次。学校只存 school_id。查重命中亮红呼吸灯，可覆盖/放弃/合并解析二。",
-      "changelog": "2.23.0 全模型安装接线（六座）。本卡功能＝yolo 布局座、公式专科 PP-FormulaNet·L、P2T-MFR 三座一键安装＋推理接线（国内镜像、sha256 逐件校验、engines/ 隔离不碰底座、不装 torch）；Texify 因 torch 重依赖门登记跳过（官方 ONNX 零新依赖另卡）；本地 VLM 书生 InternVL3-2B／面壁 MiniCPM-V-2.6 两座由千问单座泛化为多座——共享 engines/vlm/ 发动机、权重按座住 models/、单活座切座先停旧座、按件卸载互不误删（各座全空才连发动机目录删）；权重下载每源有限重试＋按件名重建 URL（修第二件误下首件）；安装/卸载确认弹窗活字成本（面壁摆明 MiniCPM Model License 商用须遵官方条款），未安装选中＝显性引导去点安装，失败显性进失败账本，不偷换不降级。真机探针 run5 双座 40/40 全绿（两件 sha256 逐字一致、720×160 小题 GPU 冒烟零失败、切座进程级真证、按件卸载、零孤儿、暖驻留零接触）。插件侧 catalog 只改相关座条目＋UI 安装确认/卸载引导/模型表本地判定；min_host_version 仍 1.0.0（底座 1.2.0 满足）。",
+      "changelog": "2.23.1 MinerU 云整批提速配套文案（仅一条）。catalog.toml mineru 条目 route_note_recognize 改整批口径：本地切好单题截图后整批一次发送、逐题回填，失败不降级——与底座 extract_batch 整批链（一次 file-urls/batch、并行上传、单轮询、逐题回填与失败账本）对齐。其余条目一字不动；models/ 与 model_prefs.toml 不入包不碰；min_host_version 仍 1.0.0。",
       "zip_url": "https://gh-proxy.com/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip",
       "mirrors": [
         "https://ghfast.top/https://raw.githubusercontent.com/MT-Blaze/jiuzhang-plugins/main/plugins/org.jiuzhang.editor.zip",

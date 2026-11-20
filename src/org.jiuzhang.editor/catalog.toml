@@ -110,7 +110,7 @@ ready_detail = "已指派：{name}。"
 degraded_detail = "未指派 MinerU 账号。"
 degraded_action = "assign"
 plan_recognize = ["mineru"]
-route_note_recognize = "识别：只交 MinerU 云端，本地切好单题截图后逐题发送，失败不降级。"
+route_note_recognize = "识别：只交 MinerU 云端，本地切好单题截图后整批一次发送、逐题回填，失败不降级。"
 
 [[entry]]
 id = "mineru_local"
