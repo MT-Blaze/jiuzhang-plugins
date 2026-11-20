@@ -327,7 +327,7 @@ rule = "weight_present"
 store = "formula"
 plan_recognize = ["formula_pp_m"]
 ready_detail = "权重已装（onnx＋yml 两件 sha256 校验通过），公式专科通道就绪。"
-degraded_detail = "权重未安装（约 596MB，国内镜像），点【安装】一键下；装好公式专科与组合路公式步生效。"
+degraded_detail = "权重未安装（约 596MB，国内镜像），点【安装】一键下；装好公式专科与文字卷公式识别生效。"
 degraded_action = "install_formula"
 install_error_detail = "安装失败：{message}"
 

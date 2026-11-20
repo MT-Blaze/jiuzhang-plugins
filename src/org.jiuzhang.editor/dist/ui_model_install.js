@@ -80,7 +80,7 @@
       var kind = kindOf(entry);
       if (kind === "formula") {
         return "安装 PP-FormulaNet·M 要下约 596MB 权重（模型 594MB＋配置 2.2MB，国内镜像）占磁盘。" +
-          "装好后公式专科与组合路公式步生效。仍要安装？";
+          "装好后公式专科与文字卷公式识别生效。仍要安装？";
       }
       if (kind === "formula_l") {
         return "安装 PP-FormulaNet·L 要下约 737MB 权重（模型 735MB＋配置 2.2MB，国内镜像）占磁盘。" +
@@ -93,7 +93,7 @@
       if (kind === "formula_texify") {
         return "安装 Texify 要下约 628MB 权重（fp16 编码器 151MB＋解码器 477MB＋四小件，国内镜像）占磁盘。" +
           "权重许可 cc-by-sa-4.0（署名＋相同方式共享）：个人/教研免费用，商用或二次分发须遵官方相同方式共享条款。" +
-          "装好后公式专科 Texify 档与组合路公式步生效。仍要安装？";
+          "装好后公式专科 Texify 档与文字卷公式识别生效。仍要安装？";
       }
       if (kind === "ocr") {
         return "安装 RapidOCR·准要下约 139MB 权重（det 62MB＋rec 77MB，国内镜像）占磁盘。" +
