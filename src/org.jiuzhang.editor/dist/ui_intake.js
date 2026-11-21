@@ -209,8 +209,11 @@
           var id = String((card && card.batch_id) || "");
           if (ids.indexOf(id) < 0) return;
           var route = (card && card.route) || {};
+          // 过程流水由 surfaceReport 按 seq 增量播报（ui_failure_surface）；
+          // note 只给没有任何 progress 条目的旧批次兜底，同一事实不播两遍。
+          var hasProgress = Array.isArray(route.progress) && route.progress.length > 0;
           var note = String(route.note || "");
-          if (note && note !== seen[id]) {
+          if (!hasProgress && note && note !== seen[id]) {
             seen[id] = note;
             dock(note);
           }
